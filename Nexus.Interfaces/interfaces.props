@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<AdditionalIncludeDirectories>
+				<!-- Используем переменные окружения -->
+<!--				$(BOOST_ROOT)\;
+				$(VCPKG_ROOT)\installed\x64-windows\include\;
+-->				
+				<!-- Пути внутри проекта -->
+				$(ProjectDir)include\;
+				$(ProjectDir);
+				%(AdditionalIncludeDirectories)
+			</AdditionalIncludeDirectories>
+			<WarningLevel>Level3</WarningLevel>
+			<LanguageStandard>stdcpp20</LanguageStandard>
+			<!-- Настройка для предкомпилированных заголовков, если они используются -->
+			<PrecompiledHeader>Use</PrecompiledHeader>
+			<PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+		</ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>
+				<!-- Используем переменные окружения -->
+<!---
+				$(BOOST_ROOT)\stage\lib\;
+				$([System.String]::Copy('%(AdditionalLibraryDirectories)').Contains('debug')) ? '$(VCPKG_ROOT)\installed\x64-windows\debug\lib' : '$(VCPKG_ROOT)\installed\x64-windows\lib';
+				%(AdditionalLibraryDirectories)
+-->
+			</AdditionalLibraryDirectories>
+		</Link>
+	</ItemDefinitionGroup>
+</Project>

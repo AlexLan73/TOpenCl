@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<!-- Общие настройки -->
+			<WarningLevel>Level3</WarningLevel>
+			<LanguageStandard>stdcpp20</LanguageStandard>
+
+			<!-- Пути к заголовочным файлам, которые нужны ядру Nexus -->
+			<AdditionalIncludeDirectories>
+<!--				$(BOOST_ROOT)\;
+				$(RXCPP_ROOT)\include\;
+				$(SPDLOG_ROOT)\include\;
+-->				
+				$(SolutionDir)..\Nexus.Interfaces\include\;
+				$(ProjectDir)include\; <!-- Для своих .h в Nexus/include -->
+				$(ProjectDir); <!-- Для своих .h в Nexus/include -->
+				%(AdditionalIncludeDirectories)
+			</AdditionalIncludeDirectories>
+		</ClCompile>
+		<Link>
+			<!-- Пути к каталогам библиотек -->
+			<AdditionalLibraryDirectories>
+				<!--				$(BOOST_ROOT)\stage\lib\; -->
+				$(SolutionDir)$(Platform)\$(Configuration)\; <!-- Где лежит MemoryData.lib -->
+				%(AdditionalLibraryDirectories)
+			</AdditionalLibraryDirectories>
+
+			<!-- Конкретные библиотеки, от которых зависит ядро -->
+			<AdditionalDependencies>
+				Nexus.Interfaces.lib;
+				%(AdditionalDependencies)
+			</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+</Project>
