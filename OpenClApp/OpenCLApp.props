@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<WarningLevel>Level3</WarningLevel>
+			<LanguageStandard>stdcpp20</LanguageStandard>
+			<AdditionalIncludeDirectories>
+				$(BOOST_ROOT)\;
+				$(VCPKG_ROOT)\installed\x64-windows\include\;
+
+				$(SolutionDir)..\Logger\include\;
+				$(SolutionDir)..\Nexus.Core\include\;
+				$(SolutionDir)..\Nexus.DataContracts\include\;
+				$(SolutionDir)..\Nexus.Interfaces\include\;
+				$(SolutionDir)..\Nexus.MemoryExchange\include\;
+				$(SolutionDir)..\CudaModule\include\;
+				$(SolutionDir)..\clFFTModule\include\;
+				$(SolutionDir)..\MinskModule\include\;
+
+				$(ProjectDir)include\;
+				$(ProjectDir);
+				%(AdditionalIncludeDirectories)
+			</AdditionalIncludeDirectories>
+		</ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>
+				$(BOOST_ROOT)\stage\lib\;
+				$([System.String]::Copy('%(AdditionalLibraryDirectories)').Contains('debug')) ? '$(VCPKG_ROOT)\installed\x64-windows\debug\lib' : '$(VCPKG_ROOT)\installed\x64-windows\lib';
+				$(CUDA_PATH)\lib\x64\;
+				$(SolutionDir)$(Platform)\$(Configuration)\;
+				%(AdditionalLibraryDirectories)
+			</AdditionalLibraryDirectories>
+			<AdditionalDependencies>
+				Logger.lib;
+				Nexus.MemoryExchange.lib;
+				Nexus.DataContracts.lib;
+				Nexus.Core.lib;
+				Nexus.Interfaces.lib;
+				CudaModule.lib;
+				clFFTModule.lib;
+				MinskModule.lib;
+				<!--				nvml.lib;  -->
+				%(AdditionalDependencies)
+			</AdditionalDependencies>
+		</Link>
+	</ItemDefinitionGroup>
+</Project>
+
+
+

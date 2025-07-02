@@ -10,4 +10,13 @@
 // Добавьте сюда заголовочные файлы для предварительной компиляции
 #include "framework.h"
 
+#include "framework.h"
+#include <string>
+#include <vector>
+#include <windows.h>    // Для WinAPI
+#include <thread>      // Для std::thread
+#include <atomic>      // Для std::atomic
+#include <memory>             // Для std::unique_ptr
+#include <sstream>            // Для std::stringstream
+
 #endif //PCH_H

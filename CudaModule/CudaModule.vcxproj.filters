@@ -19,6 +19,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{ff1a0170-7225-4bcf-b456-4cccfa1b5662}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\CudaModule">
+      <UniqueIdentifier>{7b8bc73b-a35d-455e-9868-3eb39e90c21a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -26,6 +29,9 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CudaModule\MCuda.h">
+      <Filter>include\CudaModule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -35,5 +41,11 @@
     <ClCompile Include="pch.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\MCuda.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MCuda.props" />
   </ItemGroup>
 </Project>

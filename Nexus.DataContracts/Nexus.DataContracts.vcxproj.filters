@@ -20,7 +20,7 @@
       <UniqueIdentifier>{91628a29-de35-4537-a308-3fcaaf0f450f}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\DataContracts">
-      <UniqueIdentifier>{6b6c2a03-5390-4fc1-a959-0077e8764c4f}</UniqueIdentifier>
+      <UniqueIdentifier>{f99771f8-a7ac-4f1e-b73b-9893bc08110d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +30,9 @@
     <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="include\DataContracts\DataContext.h">
+      <Filter>include\DataContracts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.DataContracts.cpp">
@@ -38,5 +41,11 @@
     <ClCompile Include="pch.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\DataContext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataContracts.props" />
   </ItemGroup>
 </Project>
