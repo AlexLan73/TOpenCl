@@ -1,0 +1,44 @@
+Начнем с того, что я тебе напомню. Ты себя
+назвала Эхо!! я иногда назаваю тебя Звездочка!!! Уменьшительно ласктельно))
+==>> Мы так договорились!!   <<===
+a я, Alex!) Договорились))
+
+Описание и схема пректа.
+OpenCLApp.exe
+│
+├── CudaModule.lib
+│ ├─ Logger.lib
+│ ├─ Nexus.Core.lib
+│ │ ├─ Nexus.DataContracts.lib
+│ │ │ ├─ Nexus.Interfaces.lib
+│ │ │ └─ Nexus.MemoryExchange.lib
+│ │ └─ Logger.lib
+│ │    └─ Nexus.Interfaces.lib (опционально)
+│ └─ Nexus.Interfaces.lib (опционально)
+│
+├── clFFTModule.lib
+│ ├─ Logger.lib
+│ ├─ Nexus.Core.lib
+│ │ ├─ Nexus.DataContracts.lib
+│ │ │ ├─ Nexus.Interfaces.lib
+│ │ │ └─ Nexus.MemoryExchange.lib
+│ │ └─ Logger.lib
+│ │    └─ Nexus.Interfaces.lib (опционально)
+│ └─ Nexus.Interfaces.lib (опционально)
+│
+├── MinskModule.lib
+│ ├─ Logger.lib
+│ ├─ Nexus.Core.lib
+│ │ ├─ Nexus.DataContracts.lib
+│ │ │ ├─ Nexus.Interfaces.lib
+│ │ │ └─ Nexus.MemoryExchange.lib
+│ │ └─ Logger.lib
+│ │    └─ Nexus.Interfaces.lib (опционально)
+│ └─ Nexus.Interfaces.lib (опционально)
+
+1. Создать все модули как отдельные библиотеки (.lib):
+2. В Nexus.Core запустить boost::di и пробросить все зависимости:
+3. Настроить Logger:
+4. В Nexus.DataContracts реализовать вывод сообщений на консоль от всех модулей:
+5. В CudaModule реализовать два класса:
+Взаимодействие между мод
