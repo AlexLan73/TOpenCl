@@ -33,6 +33,9 @@
     <ClInclude Include="include\Core\Core.h">
       <Filter>include\Core</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\ICore.h">
+      <Filter>include\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.Core.cpp">

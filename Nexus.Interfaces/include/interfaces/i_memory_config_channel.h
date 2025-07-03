@@ -19,38 +19,38 @@ using callback_data_meta_data = std::function<void(const rec_data_meta_data&)>;
 // --- Структуры данных ---  // NOLINT(clang-diagnostic-invalid-utf8)
 enum class logger_send_enum_memory { error = -1, info = 0, warning = 1 };
 
-struct ILogger {
+struct ILoggerChannel {
   uint32_t id;
   std::string module;
   std::string log;
   logger_send_enum_memory code;
 };
 
-struct IVector {
+struct IVectorChannel {
   uint32_t id;
   std::vector<double> values;
 };
 
-struct IValue {
+struct IValueChannel {
   uint32_t id;
   double value;
 };
 
 
-struct IDateTimeVariable {
+struct IDateTimeVariableChannel {
   uint32_t id;
   std::string date_time;
   float variable;
 };
 
-struct IMatrix {
+struct IMatrixChannel {
   uint32_t id;
   uint32_t i;
   uint32_t j;
   std::vector<double> values; // Все элементы матрицы по порядку // NOLINT(clang-diagnostic-invalid-utf8)
 };
 
-struct IRecResult {
+struct IRecResultChannel {
   uint32_t id;
   uint32_t n_fft;
   uint32_t m_channel;

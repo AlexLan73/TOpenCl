@@ -27,27 +27,27 @@ enum data_type_ids : uint32_t {
 //enum class LoggerSendEnumMemory { Error = -1, Info = 0, Warning = 1 };
 MSGPACK_ADD_ENUM(logger_send_enum_memory);
 
-struct IdLogger :public ILogger {
+struct IdLogger :public ILoggerChannel {
   MSGPACK_DEFINE_ARRAY(id, module, log, code); // Исправлено: убран лишний символ
 };
 
-struct IdVector :public IVector {
+struct IdVector :public IVectorChannel {
   MSGPACK_DEFINE_ARRAY(id, values);
 };
 
-struct IdValue :public IValue {
+struct IdValue :public IValueChannel {
   MSGPACK_DEFINE_ARRAY(id, value);
 };
 
-struct DateTimeVariable : public IDateTimeVariable{
+struct DateTimeVariable : public IDateTimeVariableChannel{
   MSGPACK_DEFINE_ARRAY(id, date_time, variable);
 };
 
-struct IdMatrix :public IMatrix {
+struct IdMatrix :public IMatrixChannel {
   MSGPACK_DEFINE_ARRAY(id, i, j, values); // Исправлено: Id был дважды
 };
 
-struct RecResult :public IRecResult{
+struct RecResult :public IRecResultChannel{
   MSGPACK_DEFINE_ARRAY(id, n_fft, m_channel, time_fft, time_load_data, time_waite_data
   );
 };

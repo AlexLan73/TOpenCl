@@ -7,7 +7,7 @@
 #include "CudaModule/MCuda.h"
 int main()
 {
-	auto _cuda_modeles = std::make_unique<CudaModule>();
+	auto _cuda_modeles = std::make_unique<cuda_module::CudaModule>();
 
 }
 

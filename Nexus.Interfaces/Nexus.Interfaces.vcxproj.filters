@@ -33,6 +33,12 @@
     <ClInclude Include="include\interfaces\i_memory_config_channel.h">
       <Filter>include\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="include\interfaces\ISend.h">
+      <Filter>include\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="include\interfaces\ISendLogger.h">
+      <Filter>include\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.Interfaces.cpp">

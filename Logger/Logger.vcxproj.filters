@@ -33,6 +33,9 @@
     <ClInclude Include="include\Logger\Loggers.h">
       <Filter>include\Logger</Filter>
     </ClInclude>
+    <ClInclude Include="include\Logger\ILogger.h">
+      <Filter>include\Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">

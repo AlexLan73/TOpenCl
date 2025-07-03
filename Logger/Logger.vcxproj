@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="include\Logger\ILogger.h" />
     <ClInclude Include="include\Logger\Loggers.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
