@@ -7,8 +7,8 @@
 cuda_module::CudaModule::CudaModule()
 {
 	std::cerr << "  Start CudaModule " <<  '\n';
-	auto s_ = std::make_unique<Core>();
-	auto q_ = std::make_unique<Loggers>();
+	//auto s_ = std::make_unique<Core>();
+	//auto q_ = std::make_unique<Loggers>();
 
   // 1. Разворачиваем DI-контейнер только для CudaModule
   auto injector = di::make_injector(

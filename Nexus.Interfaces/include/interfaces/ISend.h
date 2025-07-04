@@ -9,6 +9,11 @@ class ISend
 public:
 	virtual ~ISend() = default;
 
+  virtual void send(const std::string s)
+	{
+		std::cerr << "  ISend  -> " << s << '\n';
+	}
+
 	virtual void send(const IVectorChannel vector_channel)
 	{
 		std::cerr << "  ISend -> IVectorChannel " <<  '\n';

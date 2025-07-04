@@ -41,4 +41,83 @@ OpenCLApp.exe
 3. Настроить Logger:
 4. В Nexus.DataContracts реализовать вывод сообщений на консоль от всех модулей:
 5. В CudaModule реализовать два класса:
+
 Взаимодействие между мод
+Структура проекта и модули
+OpenCLApp                           // основная программа запуска модулей
+    CudaModule.lib                  // Обработка CUDA
+    clFFTModule.lib                 // Расчет FFT
+    MinskModule.lib                 // Гомельский расчте пример
+    Logger.lib                      // Логгер
+    Nexus.Core.lib                  // Ядро для управления Nexus.DataContracts и прочей бизнес логикой
+    Nexus.DataContracts.lib         // Сбор и формирования данных для передачи в C# и получение комманд
+    Nexus.Interfaces.lib            // Описание интерфейсов
+    Nexus.MemoryExchange.lib        // Модуль для обменя с С#
+
+Предварительнве связи
+OpenCLApp вызввает модули каждый в отдельном потоке передает управление и обрывает связь
+    CudaModule
+    clFFTModule
+    MinskModule
+-- Logger прозрачен в нутри каждого помуля для своих компонентов, 
+    и передает данные в C# через Nexus.DataContracts
+
+Все модули выполнены по единой схеме взаимодействия пример на CudaModule.
+к CudaModule подключены:
+ Logger                         // логгирование информации 
+ Nexus.Core                     //  добавляет, удаляет, start, stop, pause задач.
+  в передаются  c задачами
+   -- пита на получение информации
+   - температура карты
+   - температура еще чего
+   - уол-во рабочих ядер
+   -- управление картой через CUDA
+   и прочее
+ и может быть Nexus.Interfaces
+
+ Nexus.Core связан с        // осуществляется все управление логикой, получение комманд от C# b htfkbpfwbz
+    ...Module 
+    Nexus.Interfaces
+    Nexus.DataContracts     // собирает, первичная обработка и передача     
+    Logger                  // логгировани
+
+Nexus.DataContracts         // собирает, первичная обработка и передача данных в C#, получение комманд
+    Nexus.Interfaces
+    Nexus.MemoryExchange   // Модуль для обменя с С#
+
+в Nexus.Core развернуть boost::di и пробросить все связи в
+    ...Module, Nexus.DataContracts, Logger
+
+Logger 
+    Nexus.Interfaces  // конфигурация передаваемых коммад в логере
+// --- Структуры данных ---  // NOLINT(clang-diagnostic-invalid-utf8)
+enum class logger_send_enum_memory { error = -1, info = 0, warning = 1 };
+
+struct ILogger {
+  uint32_t id;
+  std::string module;
+  std::string log;
+  logger_send_enum_memory code;
+};
+
+везде обмен через boost::di
+Этапы создания:
+1. все модули (lib). 
+2. в Nexus.Core запустить boost::di и подключить все взаимодействия
+3. настроить Logger
+3.1. Используем spdlog
+4. в Nexus.DataContracts вывести сообщение на сонсоль от всех модулей
+5. в CudaModule создать два класса 0. измерение температуры. 1. измерение кол-во работающих ядер
+6. послать сообщение в Logger
+7. Послать данные в Nexus.DataContracts и вывести их на сансоль (проверяем поток данных)
+7.1 структура передаваемых данных 
+7.1.1  измерение температуры   
+        struct IVector {uint32_t id; std::vector<double> values;};
+        values - вектор значений
+        id = 0
+7.1.2  измерение кол-во работающих ядер
+        struct IValue {uint32_t id; double value;};
+        id = 1; value - кол-во ядер
+7.2 Опрос датчики реализованны по Нашей с тобой схеме через событие (если не помнишь приложу)
+    этот блок должен находится в Nexus.Core и к нему должны подключаться все внешние задачи модуля
+

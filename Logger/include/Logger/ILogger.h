@@ -5,12 +5,12 @@
 #include "interfaces/ISendLogger.h"
 #include "interfaces/i_memory_config_channel.h"
 
-class ILogger:public ISendLogger
+class ILogger
 {
 public:
 //	log({ "CudaModule", "Опрос температуры", logger_send_enum_memory::info });  // NOLINT(clang-diagnostic-invalid-utf8)
-	virtual void log(ILoggerChannel logger_channel);
-	
+  virtual ~ILogger() = default;
+  virtual void log(const ILoggerChannel& msg) = 0;
 };
 
 

@@ -8,10 +8,7 @@ class ISendLogger
 {
 public:
 	virtual ~ISendLogger() = default;
-	virtual void send(const std::string s)
-	{
-		std::cerr << "  ISend -> "<< s << '\n';
-	}
+	
 };
 
 

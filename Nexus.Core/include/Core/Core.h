@@ -17,8 +17,8 @@ public:
 	void send(const IValueChannel value_channel) override;
 
 
-	virtual void start() override;
-	virtual void stop() override;
+	void start() override;
+	void stop() override;
 	void addTask(std::function<void()> task) override;
 
 private:

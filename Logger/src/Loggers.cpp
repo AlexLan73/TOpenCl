@@ -9,22 +9,22 @@
 Loggers::Loggers()
 {
 	std::cerr << "  Start LoggerS " << '\n';
+
+ // Создаём цветной логгер с именем "module_logger"
+ if (!spdlog::get("module_logger")) {
+	logger_ = spdlog::stdout_color_mt("module_logger");
+ }
+ else {
+	logger_ = spdlog::get("module_logger");
+ }
 }
 
-void Loggers::send(const std::string s)
+void Loggers::log(const ILoggerChannel& msg)
 {
-	std::cerr << " Logger -- "<< s << '\n';
-
+  std::string level = to_string(msg.code);
+  logger_->info("[ID:{}][{}][{}] {}", msg.id, msg.module, level, msg.log);
 }
 
-void Loggers::log(ILoggerChannel logger_channel)
-{
-  std::cout << "[LOG] "
-    << "ID: " << logger_channel.id << " | "
-    << "Module: " << logger_channel.module << " | "
-    << "Type: " << to_string(logger_channel.code) << " | "
-    << "Message: " << logger_channel.log << '\n';
-}
 std::string Loggers::to_string(logger_send_enum_memory code) {
   switch (code) {
   case logger_send_enum_memory::error:   return "ERROR";
@@ -34,6 +34,18 @@ std::string Loggers::to_string(logger_send_enum_memory code) {
   }
 }
 
+/*
+ 
+void Loggers::log(const ILoggerChannel& msg)
+{
+  std::cout << "[LOG] "
+    << "ID: " << msg.id << " | "
+    << "Module: " << msg.module << " | "
+    << "Type: " << to_string(msg.code) << " | "
+    << "Message: " << msg.log << '\n';
+}
+
+ */
 
 //ILoggerChannel log1{ 1, "CudaModule", "Температура превышена!", logger_send_enum_memory::warning };  
 //ILoggerChannel log2{ 2, "Nexus.Core", "Запуск опроса датчиков", logger_send_enum_memory::info };

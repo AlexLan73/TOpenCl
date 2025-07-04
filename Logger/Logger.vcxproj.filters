@@ -36,6 +36,9 @@
     <ClInclude Include="include\Logger\ILogger.h">
       <Filter>include\Logger</Filter>
     </ClInclude>
+    <ClInclude Include="..\Nexus.Core\include\Core\ICore.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Logger.cpp">
