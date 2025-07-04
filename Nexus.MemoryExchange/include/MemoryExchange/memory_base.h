@@ -1,15 +1,15 @@
-#pragma once
+п»ї#pragma once
 // memory_base.h
 
 #include "interfaces/i_memory_config_channel.h"
 #include "shared_data_types.h"
 #include <string>
 #include <vector>
-#include <windows.h>    // Для WinAPI
-#include <thread>      // Для std::thread
-#include <atomic>      // Для std::atomic
+#include <windows.h>    // Р”Р»СЏ WinAPI
+#include <thread>      // Р”Р»СЏ std::thread
+#include <atomic>      // Р”Р»СЏ std::atomic
 
-// Важно: Отменить макрос unpack из Windows.h, если он определен
+// Р’Р°Р¶РЅРѕ: РћС‚РјРµРЅРёС‚СЊ РјР°РєСЂРѕСЃ unpack РёР· Windows.h, РµСЃР»Рё РѕРЅ РѕРїСЂРµРґРµР»РµРЅ
 #ifdef unpack
 #undef unpack
 #endif
@@ -30,7 +30,7 @@ public:
 
 private:
   void event_loop();
-  std::wstring to_wstring(const std::string& str); // Добавлен сюда, чтобы быть членом класса
+  std::wstring to_wstring(const std::string& str); // Р”РѕР±Р°РІР»РµРЅ СЃСЋРґР°, С‡С‚РѕР±С‹ Р±С‹С‚СЊ С‡Р»РµРЅРѕРј РєР»Р°СЃСЃР°
   metadata_map parse_control_string(const char* str);
   std::string format_control_string(const metadata_map& metadata);
 
@@ -46,6 +46,6 @@ private:
   std::atomic<bool> running_{ false };
 
   const size_t control_size_ = 8 * 1024;
-  size_t data_segment_size_; // Исправлен тип на size_t
+  size_t data_segment_size_; // РСЃРїСЂР°РІР»РµРЅ С‚РёРї РЅР° size_t
 };
 

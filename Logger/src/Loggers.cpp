@@ -1,4 +1,4 @@
-// ReSharper disable CppClangTidyClangDiagnosticInvalidUtf8
+ï»¿// ReSharper disable CppClangTidyClangDiagnosticInvalidUtf8
 #include "pch.h"
 #include "Logger/Loggers.h"
 
@@ -6,17 +6,23 @@
 #include <string>
 
 
-Loggers::Loggers()
+Loggers::Loggers(std::string name):name_logger_(name)
 {
 	std::cerr << "  Start LoggerS " << '\n';
 
- // Ñîçäà¸ì öâåòíîé ëîããåð ñ èìåíåì "module_logger"
- if (!spdlog::get("module_logger")) {
-	logger_ = spdlog::stdout_color_mt("module_logger");
- }
- else {
-	logger_ = spdlog::get("module_logger");
- }
+ // Ð¡Ð¾Ð·Ð´Ð°Ñ‘Ð¼ Ñ†Ð²ÐµÑ‚Ð½Ð¾Ð¹ Ð»Ð¾Ð³Ð³ÐµÑ€ Ñ Ð¸Ð¼ÐµÐ½ÐµÐ¼ "module_logger"
+  if (!spdlog::get(name_logger_)) {
+    logger_ = spdlog::stdout_color_mt(name_logger_);
+  }
+  else {
+    logger_ = spdlog::get(name_logger_);
+  }
+  //if (!spdlog::get("module_logger")) {
+  //  logger_ = spdlog::stdout_color_mt("module_logger");
+  //}
+  //else {
+  //  logger_ = spdlog::get("module_logger");
+  //}
 }
 
 void Loggers::log(const ILoggerChannel& msg)
@@ -47,20 +53,20 @@ void Loggers::log(const ILoggerChannel& msg)
 
  */
 
-//ILoggerChannel log1{ 1, "CudaModule", "Òåìïåðàòóðà ïðåâûøåíà!", logger_send_enum_memory::warning };  
-//ILoggerChannel log2{ 2, "Nexus.Core", "Çàïóñê îïðîñà äàò÷èêîâ", logger_send_enum_memory::info };
-//ILoggerChannel log3{ 3, "Logger", "Îøèáêà èíèöèàëèçàöèè", logger_send_enum_memory::error };
+//ILoggerChannel log1{ 1, "CudaModule", "Ð¢ÐµÐ¼Ð¿ÐµÑ€Ð°Ñ‚ÑƒÑ€Ð° Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐµÐ½Ð°!", logger_send_enum_memory::warning };  
+//ILoggerChannel log2{ 2, "Nexus.Core", "Ð—Ð°Ð¿ÑƒÑÐº Ð¾Ð¿Ñ€Ð¾ÑÐ° Ð´Ð°Ñ‚Ñ‡Ð¸ÐºÐ¾Ð²", logger_send_enum_memory::info };
+//ILoggerChannel log3{ 3, "Logger", "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸", logger_send_enum_memory::error };
 
 
 
 /*
 
 // 
-//// Ïðèìåð èñïîëüçîâàíèÿ
+//// ÐŸÑ€Ð¸Ð¼ÐµÑ€ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ
 //int main() {
-//    ILoggerChannel log1{1, "CudaModule", "Òåìïåðàòóðà ïðåâûøåíà!", logger_send_enum_memory::warning};
-//    ILoggerChannel log2{2, "Nexus.Core", "Çàïóñê îïðîñà äàò÷èêîâ", logger_send_enum_memory::info};
-//    ILoggerChannel log3{3, "Logger", "Îøèáêà èíèöèàëèçàöèè", logger_send_enum_memory::error};
+//    ILoggerChannel log1{1, "CudaModule", "Ð¢ÐµÐ¼Ð¿ÐµÑ€Ð°Ñ‚ÑƒÑ€Ð° Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐµÐ½Ð°!", logger_send_enum_memory::warning};
+//    ILoggerChannel log2{2, "Nexus.Core", "Ð—Ð°Ð¿ÑƒÑÐº Ð¾Ð¿Ñ€Ð¾ÑÐ° Ð´Ð°Ñ‚Ñ‡Ð¸ÐºÐ¾Ð²", logger_send_enum_memory::info};
+//    ILoggerChannel log3{3, "Logger", "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸", logger_send_enum_memory::error};
 //
 //    print_logger_channel(log1);
 //    print_logger_channel(log2);

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IDataContext.h"
 #include "MemoryExchange/memory_nome.h"
 #include "MemoryExchange/i_memory_data_handler.h"

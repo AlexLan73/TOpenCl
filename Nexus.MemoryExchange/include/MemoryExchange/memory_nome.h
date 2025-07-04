@@ -1,18 +1,18 @@
-//  memory_nome.h
+п»ї//  memory_nome.h
 #pragma once
 
-// Подключаем, чтобы видеть все типы данных  // NOLINT(clang-diagnostic-invalid-utf8)
+// РџРѕРґРєР»СЋС‡Р°РµРј, С‡С‚РѕР±С‹ РІРёРґРµС‚СЊ РІСЃРµ С‚РёРїС‹ РґР°РЅРЅС‹С…  // NOLINT(clang-diagnostic-invalid-utf8)
 #include "interfaces/i_memory_config_channel.h"
 #include "MemoryExchange/shared_data_types.h"
 #include "memory_base.h"
 
 
 #include <string>
-#include <memory>       // Для std::unique_ptr
-//#include <functional>   // Для CallbackDataMetaData
-//#include <iostream>     // Для std::cout, std::cerr (хотя эти чаще в .cpp)
+#include <memory>       // Р”Р»СЏ std::unique_ptr
+//#include <functional>   // Р”Р»СЏ CallbackDataMetaData
+//#include <iostream>     // Р”Р»СЏ std::cout, std::cerr (С…РѕС‚СЏ СЌС‚Рё С‡Р°С‰Рµ РІ .cpp)
 
-//class MemoryBase; // Forward declaration для MemoryBase
+//class MemoryBase; // Forward declaration РґР»СЏ MemoryBase
 
 class MemoryNome {
 public:
@@ -24,16 +24,16 @@ public:
 
   void write_data_to_memory(const std::vector<uint8_t>& bytes, const metadata_map& map);
 
-  // Проверяет метаданные на канале, в который мы ПИШЕМ.
-      // Позволяет узнать, прочитал ли получатель наши данные.
+  // РџСЂРѕРІРµСЂСЏРµС‚ РјРµС‚Р°РґР°РЅРЅС‹Рµ РЅР° РєР°РЅР°Р»Рµ, РІ РєРѕС‚РѕСЂС‹Р№ РјС‹ РџРРЁР•Рњ.
+      // РџРѕР·РІРѕР»СЏРµС‚ СѓР·РЅР°С‚СЊ, РїСЂРѕС‡РёС‚Р°Р» Р»Рё РїРѕР»СѓС‡Р°С‚РµР»СЊ РЅР°С€Рё РґР°РЅРЅС‹Рµ.
   metadata_map check_write_channel_control();
 
-  // Очищает метаданные на канале, из которого мы ЧИТАЕМ.
-  // Это нужно делать после того, как мы обработали входящие данные.
+  // РћС‡РёС‰Р°РµС‚ РјРµС‚Р°РґР°РЅРЅС‹Рµ РЅР° РєР°РЅР°Р»Рµ, РёР· РєРѕС‚РѕСЂРѕРіРѕ РјС‹ Р§РРўРђР•Рњ.
+  // Р­С‚Рѕ РЅСѓР¶РЅРѕ РґРµР»Р°С‚СЊ РїРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє РјС‹ РѕР±СЂР°Р±РѕС‚Р°Р»Рё РІС…РѕРґСЏС‰РёРµ РґР°РЅРЅС‹Рµ.
   void clear_read_channel_control();
 private:
-  std::unique_ptr<MemoryBase> memory_read_; // Используем unique_ptr
-  std::unique_ptr<MemoryBase> memory_write_; // Используем unique_ptr
+  std::unique_ptr<MemoryBase> memory_read_; // РСЃРїРѕР»СЊР·СѓРµРј unique_ptr
+  std::unique_ptr<MemoryBase> memory_write_; // РСЃРїРѕР»СЊР·СѓРµРј unique_ptr
 };
 
 

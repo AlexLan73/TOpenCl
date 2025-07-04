@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <string>
 #include "interfaces/ISendLogger.h"
@@ -8,7 +8,7 @@
 class IDataContext :public ISend
 {
 public:
-	//	log({ "CudaModule", "Опрос температуры", logger_send_enum_memory::info });
+	//	log({ "CudaModule", "РћРїСЂРѕСЃ С‚РµРјРїРµСЂР°С‚СѓСЂС‹", logger_send_enum_memory::info });
 //	virtual void log(ILoggerChannel logger_channel);
 
 };

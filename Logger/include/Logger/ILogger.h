@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <string>
 #include "interfaces/ISend.h"
@@ -8,7 +8,7 @@
 class ILogger
 {
 public:
-//	log({ "CudaModule", "Опрос температуры", logger_send_enum_memory::info });  // NOLINT(clang-diagnostic-invalid-utf8)
+//	log({ "CudaModule", "РћРїСЂРѕСЃ С‚РµРјРїРµСЂР°С‚СѓСЂС‹", logger_send_enum_memory::info });  // NOLINT(clang-diagnostic-invalid-utf8)
   virtual ~ILogger() = default;
   virtual void log(const ILoggerChannel& msg) = 0;
 };

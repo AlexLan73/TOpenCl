@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <functional>
 #include <map>
 #include <string>
@@ -16,7 +16,7 @@ struct rec_data_meta_data {
 
 using callback_data_meta_data = std::function<void(const rec_data_meta_data&)>;
 
-// --- Структуры данных ---  // NOLINT(clang-diagnostic-invalid-utf8)
+// --- РЎС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С… ---  // NOLINT(clang-diagnostic-invalid-utf8)
 enum class logger_send_enum_memory { error = -1, info = 0, warning = 1 };
 
 struct ILoggerChannel {
@@ -47,7 +47,7 @@ struct IMatrixChannel {
   uint32_t id;
   uint32_t i;
   uint32_t j;
-  std::vector<double> values; // Все элементы матрицы по порядку // NOLINT(clang-diagnostic-invalid-utf8)
+  std::vector<double> values; // Р’СЃРµ СЌР»РµРјРµРЅС‚С‹ РјР°С‚СЂРёС†С‹ РїРѕ РїРѕСЂСЏРґРєСѓ // NOLINT(clang-diagnostic-invalid-utf8)
 };
 
 struct IRecResultChannel {

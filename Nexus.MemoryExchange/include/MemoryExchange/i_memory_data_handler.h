@@ -1,55 +1,55 @@
-#pragma once
+п»ї#pragma once
 // i_memory_data_handler.h
 
 #include "shared_data_types.h"
-#include <iostream>    // Для std::cout
-#include <vector>      // Для std::vector
+#include <iostream>    // Р”Р»СЏ std::cout
+#include <vector>      // Р”Р»СЏ std::vector
 
-// IMemoryDataHandler - это "контракт" или интерфейс.
-// Любой класс, который хочет обрабатывать данные, передаваемые через MemoryData,
-// должен унаследовать этот интерфейс и переопределить нужные методы.
+// IMemoryDataHandler - СЌС‚Рѕ "РєРѕРЅС‚СЂР°РєС‚" РёР»Рё РёРЅС‚РµСЂС„РµР№СЃ.
+// Р›СЋР±РѕР№ РєР»Р°СЃСЃ, РєРѕС‚РѕСЂС‹Р№ С…РѕС‡РµС‚ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РґР°РЅРЅС‹Рµ, РїРµСЂРµРґР°РІР°РµРјС‹Рµ С‡РµСЂРµР· MemoryData,
+// РґРѕР»Р¶РµРЅ СѓРЅР°СЃР»РµРґРѕРІР°С‚СЊ СЌС‚РѕС‚ РёРЅС‚РµСЂС„РµР№СЃ Рё РїРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ РЅСѓР¶РЅС‹Рµ РјРµС‚РѕРґС‹.
 class IMemoryDataHandler {
 public:
-  // Виртуальный деструктор ОБЯЗАТЕЛЕН для базовых классов с виртуальными функциями.
+  // Р’РёСЂС‚СѓР°Р»СЊРЅС‹Р№ РґРµСЃС‚СЂСѓРєС‚РѕСЂ РћР‘РЇР—РђРўР•Р›Р•Рќ РґР»СЏ Р±Р°Р·РѕРІС‹С… РєР»Р°СЃСЃРѕРІ СЃ РІРёСЂС‚СѓР°Р»СЊРЅС‹РјРё С„СѓРЅРєС†РёСЏРјРё.
   virtual ~IMemoryDataHandler()
   {
   }
 
-  // --- Виртуальные функции-заглушки (stubs) ---
-  // Они уже имеют реализацию по умолчанию, поэтому их не обязательно переопределять.
+  // --- Р’РёСЂС‚СѓР°Р»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё-Р·Р°РіР»СѓС€РєРё (stubs) ---
+  // РћРЅРё СѓР¶Рµ РёРјРµСЋС‚ СЂРµР°Р»РёР·Р°С†РёСЋ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ, РїРѕСЌС‚РѕРјСѓ РёС… РЅРµ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РїРµСЂРµРѕРїСЂРµРґРµР»СЏС‚СЊ.
 
   virtual void on_ack_received() {
-    std::cout << "[IMemoryDataHandler] Получено подтверждение (ACK), но обработчик не переопределен.\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅРѕ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ (ACK), РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ.\n";
   }
 
   virtual void on_logger_data(const std::vector<IdLogger>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные Logger, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ Logger, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
 
   virtual void on_vector_data(const std::vector<IdVector>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaVector, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ CudaVector, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
 
   virtual void on_value_data(const std::vector<IdValue>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaValue, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ CudaValue, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
 
   virtual void on_date_time_variable_data(const std::vector<DateTimeVariable>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaDateTimeVariable, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ CudaDateTimeVariable, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
 
   virtual void on_matrix_data(const std::vector<IdMatrix>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaMatrix, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ CudaMatrix, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
 
   virtual void on_rec_result_data(const std::vector<RecResult>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные RecResult, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ RecResult, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
 
   virtual void on_dt_record_data(const std::vector<DtRecord>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaDtRecord, но обработчик не переопределен. Количество: " << data.size() << "\n";
+    std::cout << "[IMemoryDataHandler] РџРѕР»СѓС‡РµРЅС‹ РґР°РЅРЅС‹Рµ CudaDtRecord, РЅРѕ РѕР±СЂР°Р±РѕС‚С‡РёРє РЅРµ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅ. РљРѕР»РёС‡РµСЃС‚РІРѕ: " << data.size() << "\n";
   }
-  // Добавьте другие виртуальные методы для каждого типа данных, если они нужны в интерфейсе.
+  // Р”РѕР±Р°РІСЊС‚Рµ РґСЂСѓРіРёРµ РІРёСЂС‚СѓР°Р»СЊРЅС‹Рµ РјРµС‚РѕРґС‹ РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С…, РµСЃР»Рё РѕРЅРё РЅСѓР¶РЅС‹ РІ РёРЅС‚РµСЂС„РµР№СЃРµ.
 
 
 };

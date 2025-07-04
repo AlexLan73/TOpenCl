@@ -1,4 +1,4 @@
-#include "pch.h"
+п»ї#include "pch.h"
 #include "CudaModule/MCuda.h"
 #include "Core/ICore.h"
 #include "DataContracts/IDataContext.h"
@@ -10,25 +10,35 @@ cuda_module::CudaModule::CudaModule()
 	//auto s_ = std::make_unique<Core>();
 	//auto q_ = std::make_unique<Loggers>();
 
-  // 1. Разворачиваем DI-контейнер только для CudaModule
+  // 1. Р Р°Р·РІРѕСЂР°С‡РёРІР°РµРј DI-РєРѕРЅС‚РµР№РЅРµСЂ С‚РѕР»СЊРєРѕ РґР»СЏ CudaModule
   auto injector = di::make_injector(
-    di::bind<ILogger>.to<Loggers>(),
+    di::bind<ILogger>.to<Loggers>("CUDA"),
     di::bind<ICore>.to<Core>(),
     di::bind<IDataContext>.to<DataContext>()
   );
 
-  // 2. Получаем зависимости через DI
+  // 2. РџРѕР»СѓС‡Р°РµРј Р·Р°РІРёСЃРёРјРѕСЃС‚Рё С‡РµСЂРµР· DI
   auto logger = injector.create<std::shared_ptr<ILogger>>();
   auto nexusCore = injector.create<std::shared_ptr<ICore>>();
   auto data_context = injector.create<std::shared_ptr<IDataContext>>();
-  
-  // 3. Пример: регистрируем задачу в ядре, логируем, отправляем данные
+
+  // 3. РСЃРїРѕР»СЊР·СѓРµРј Р»РѕРіРіРµСЂ
+  ILoggerChannel log1{ 1, "CudaModule", " Time max!!! ", logger_send_enum_memory::warning };
+  ILoggerChannel log2{ 2, "Nexus.Core", "Start sensor", logger_send_enum_memory::info };
+  ILoggerChannel log3{ 3, "Logger", "Error inicial", logger_send_enum_memory::error };
+
+  logger->log(log1);
+  logger->log(log2);
+  logger->log(log3);
+
+
+  // 3. РџСЂРёРјРµСЂ: СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј Р·Р°РґР°С‡Сѓ РІ СЏРґСЂРµ, Р»РѕРіРёСЂСѓРµРј, РѕС‚РїСЂР°РІР»СЏРµРј РґР°РЅРЅС‹Рµ
   nexusCore->addTask([logger, data_context] {
     IVectorChannel temp{ 0, {70.1, 71.3, 72.0} };
     IValueChannel cores{ 1, 3840 };
 
-    logger->log({ 0,"CudaModule", "Опрос температуры", logger_send_enum_memory::info });
-    logger->log({ 0,"CudaModule", "Опрос ядер", logger_send_enum_memory::info });
+    logger->log({ 0,"CudaModule", "РћРїСЂРѕСЃ С‚РµРјРїРµСЂР°С‚СѓСЂС‹", logger_send_enum_memory::info });
+    logger->log({ 0,"CudaModule", "РћРїСЂРѕСЃ СЏРґРµСЂ", logger_send_enum_memory::info });
 
     data_context->send(temp);
     data_context->send(cores);
@@ -37,10 +47,10 @@ cuda_module::CudaModule::CudaModule()
 
 
 
-  // 4. Запуск событийной схемы (например, через boost::signals2)
+  // 4. Р—Р°РїСѓСЃРє СЃРѕР±С‹С‚РёР№РЅРѕР№ СЃС…РµРјС‹ (РЅР°РїСЂРёРјРµСЂ, С‡РµСЂРµР· boost::signals2)
   nexusCore->start();
 
-  // 5. Ожидание завершения (или интеграция с OpenCLApp)
+  // 5. РћР¶РёРґР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРёСЏ (РёР»Рё РёРЅС‚РµРіСЂР°С†РёСЏ СЃ OpenCLApp)
   // ...
   nexusCore->stop();
 

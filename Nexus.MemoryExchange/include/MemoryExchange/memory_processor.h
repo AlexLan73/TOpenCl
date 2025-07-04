@@ -1,26 +1,26 @@
-#pragma once
+п»ї#pragma once
 //#pragma once
 //// MemoryProcessor.h
 
 
 #include "interfaces/i_memory_config_channel.h"  
 #include "shared_data_types.h"
-#include "i_memory_data_handler.h"  // Подключаем интерфейс
+#include "i_memory_data_handler.h"  // РџРѕРґРєР»СЋС‡Р°РµРј РёРЅС‚РµСЂС„РµР№СЃ
 #include "memory_nome.h"
 //
-//#include <memory>             // Для std::unique_ptr
-//#include <string>             // Для std::string
-//#include <sstream>            // Для std::stringstream
-//#include <vector>             // Для std::vector
+//#include <memory>             // Р”Р»СЏ std::unique_ptr
+//#include <string>             // Р”Р»СЏ std::string
+//#include <sstream>            // Р”Р»СЏ std::stringstream
+//#include <vector>             // Р”Р»СЏ std::vector
 
-// Этот класс инкапсулирует всю логику приема, десериализации и диспетчеризации.
+// Р­С‚РѕС‚ РєР»Р°СЃСЃ РёРЅРєР°РїСЃСѓР»РёСЂСѓРµС‚ РІСЃСЋ Р»РѕРіРёРєСѓ РїСЂРёРµРјР°, РґРµСЃРµСЂРёР°Р»РёР·Р°С†РёРё Рё РґРёСЃРїРµС‚С‡РµСЂРёР·Р°С†РёРё.
 class MemoryProcessor {
 public:
-  // Конструктор принимает указатель на реализацию интерфейса.
+  // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїСЂРёРЅРёРјР°РµС‚ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЂРµР°Р»РёР·Р°С†РёСЋ РёРЅС‚РµСЂС„РµР№СЃР°.
   MemoryProcessor(const std::string& name, server_client role, IMemoryDataHandler* handler);
 
 
-  // Упрощенный метод для отправки данных (скрывает детали сериализации)
+  // РЈРїСЂРѕС‰РµРЅРЅС‹Р№ РјРµС‚РѕРґ РґР»СЏ РѕС‚РїСЂР°РІРєРё РґР°РЅРЅС‹С… (СЃРєСЂС‹РІР°РµС‚ РґРµС‚Р°Р»Рё СЃРµСЂРёР°Р»РёР·Р°С†РёРё)
   template<typename T>
   void send_data(data_type_ids type_id, const std::vector<T>& data);
 
@@ -28,20 +28,20 @@ public:
   void clear_read_channel();
 
 private:
-  // Внутренний метод, который вызывается MemoryNome при получении сырых данных
+  // Р’РЅСѓС‚СЂРµРЅРЅРёР№ РјРµС‚РѕРґ, РєРѕС‚РѕСЂС‹Р№ РІС‹Р·С‹РІР°РµС‚СЃСЏ MemoryNome РїСЂРё РїРѕР»СѓС‡РµРЅРёРё СЃС‹СЂС‹С… РґР°РЅРЅС‹С…
   void on_raw_data_received(const rec_data_meta_data& dMetaData);
 
   std::unique_ptr<MemoryNome> memory_nome_;
-  IMemoryDataHandler* handler_; // Указатель на внешний обработчик
+  IMemoryDataHandler* handler_; // РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РІРЅРµС€РЅРёР№ РѕР±СЂР°Р±РѕС‚С‡РёРє
 };
 
-// Реализацию шаблонного метода лучше оставить в заголовочном файле
+// Р РµР°Р»РёР·Р°С†РёСЋ С€Р°Р±Р»РѕРЅРЅРѕРіРѕ РјРµС‚РѕРґР° Р»СѓС‡С€Рµ РѕСЃС‚Р°РІРёС‚СЊ РІ Р·Р°РіРѕР»РѕРІРѕС‡РЅРѕРј С„Р°Р№Р»Рµ
 template<typename T>
 void MemoryProcessor::send_data(const data_type_ids type_id, const std::vector<T>& data) {
   if (data.empty() || !memory_nome_) return;
 
   std::stringstream buffer;
-  msgpack::pack(buffer, data); // Сериализация
+  msgpack::pack(buffer, data); // РЎРµСЂРёР°Р»РёР·Р°С†РёСЏ
   std::string packed_str = buffer.str();
   const std::vector<uint8_t> bytes(packed_str.begin(), packed_str.end());
 
@@ -49,7 +49,7 @@ void MemoryProcessor::send_data(const data_type_ids type_id, const std::vector<T
   metadata["type"] = std::to_string(type_id);
   metadata["size"] = std::to_string(bytes.size());
 
-  memory_nome_->write_data_to_memory(bytes, metadata); // Запись в MMF
+  memory_nome_->write_data_to_memory(bytes, metadata); // Р—Р°РїРёСЃСЊ РІ MMF
 }
 
 

@@ -1,4 +1,4 @@
-// "MemoryProcessor.cpp"
+п»ї// "MemoryProcessor.cpp"
 
 #include "pch.h"
 
@@ -9,7 +9,7 @@ MemoryProcessor::MemoryProcessor(const std::string& name, server_client role, IM
   if (!handler_) {
     throw std::invalid_argument("Handler (IMemoryDataHandler) cannot be nullptr.");
   }
-  // Передаем лямбду, которая вызывает наш внутренний OnRawDataReceived
+  // РџРµСЂРµРґР°РµРј Р»СЏРјР±РґСѓ, РєРѕС‚РѕСЂР°СЏ РІС‹Р·С‹РІР°РµС‚ РЅР°С€ РІРЅСѓС‚СЂРµРЅРЅРёР№ OnRawDataReceived
   memory_nome_ = std::make_unique<MemoryNome>(name, role,
     [this](const rec_data_meta_data& meta) {
       this->on_raw_data_received(meta);
@@ -17,14 +17,14 @@ MemoryProcessor::MemoryProcessor(const std::string& name, server_client role, IM
 }
 
 void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) {
-  // 1. Проверяем, является ли это подтверждением (ACK)
+  // 1. РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЌС‚Рѕ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµРј (ACK)
   const auto cmd_it = dMetaData.meta_data.find("command");
   if (cmd_it != dMetaData.meta_data.end() && cmd_it->second == "ok") {
     if (handler_) handler_->on_ack_received();
     return;
   }
 
-  // 2. Если это не ACK, то это данные. Ищем ID типа.
+  // 2. Р•СЃР»Рё СЌС‚Рѕ РЅРµ ACK, С‚Рѕ СЌС‚Рѕ РґР°РЅРЅС‹Рµ. РС‰РµРј ID С‚РёРїР°.
   const auto type_it = dMetaData.meta_data.find("type");
   if (type_it == dMetaData.meta_data.end()) {
     std::cerr << "[MemoryProcessor] Received data without 'type' ID in metadata.\n";
@@ -35,8 +35,8 @@ void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) 
     uint32_t typeId = std::stoul(type_it->second);
     msgpack::object_handle oh = msgpack::unpack(reinterpret_cast<const char*>(dMetaData.bytes.data()), dMetaData.bytes.size());
 
-    if (handler_) { // Проверяем, что есть обработчик
-      // Используем switch для вызова соответствующего метода обработчика
+    if (handler_) { // РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РµСЃС‚СЊ РѕР±СЂР°Р±РѕС‚С‡РёРє
+      // РСЃРїРѕР»СЊР·СѓРµРј switch РґР»СЏ РІС‹Р·РѕРІР° СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРіРѕ РјРµС‚РѕРґР° РѕР±СЂР°Р±РѕС‚С‡РёРєР°
       switch (typeId) {
       case e_logger:
         handler_->on_logger_data(oh.get().as<std::vector<IdLogger>>());
@@ -69,9 +69,9 @@ void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) 
     std::cerr << "[MemoryProcessor] Deserialization error: " << e.what() << '\n';
   }
 
-  // ЭТО КЛЮЧЕВАЯ ДОРАБОТКА ДЛЯ СЕРВЕРА
-  if (!dMetaData.meta_data.empty()) { // Очищаем только если были метаданные
-    std::cout << "[MemoryProcessor] Данные обработаны, очищаю контрольный блок чтения...\n";
+  // Р­РўРћ РљР›Р®Р§Р•Р’РђРЇ Р”РћР РђР‘РћРўРљРђ Р”Р›РЇ РЎР•Р Р’Р•Р Рђ
+  if (!dMetaData.meta_data.empty()) { // РћС‡РёС‰Р°РµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё Р±С‹Р»Рё РјРµС‚Р°РґР°РЅРЅС‹Рµ
+    std::cout << "[MemoryProcessor] Р”Р°РЅРЅС‹Рµ РѕР±СЂР°Р±РѕС‚Р°РЅС‹, РѕС‡РёС‰Р°СЋ РєРѕРЅС‚СЂРѕР»СЊРЅС‹Р№ Р±Р»РѕРє С‡С‚РµРЅРёСЏ...\n";
     clear_read_channel();
   }
 }

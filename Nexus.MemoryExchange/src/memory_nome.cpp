@@ -1,12 +1,12 @@
-//  memory_nome.cpp
+п»ї//  memory_nome.cpp
 
 // ReSharper disable CppMemberFunctionMayBeConst
 #include "pch.h"
 
 #include "MemoryExchange/memory_nome.h"
 
-#include "MemoryExchange/memory_base.h"   // Должен быть подключен для определения MemoryBase
-#include <iostream>                       // Для std::cout, std::cerr
+#include "MemoryExchange/memory_base.h"   // Р”РѕР»Р¶РµРЅ Р±С‹С‚СЊ РїРѕРґРєР»СЋС‡РµРЅ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ MemoryBase
+#include <iostream>                       // Р”Р»СЏ std::cout, std::cerr
 
 constexpr size_t default_data_size = 1024 * 64; // 64 KB  // NOLINT(bugprone-implicit-widening-of-multiplication-result)
 
@@ -25,7 +25,7 @@ MemoryNome::MemoryNome(const std::string& name_memory, server_client role, callb
     std::cout << "[MemoryNome Client] Reading from: " << readChannelName << ", Writing to: " << writeChannelName << '\n';
   }
 
-  // Использование make_unique
+  // РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ make_unique
   memory_read_ = std::make_unique<MemoryBase>(readChannelName, type_block_memory::read, default_data_size, callback);
   memory_write_ = std::make_unique<MemoryBase>(writeChannelName, type_block_memory::write, default_data_size, nullptr);
 }
@@ -40,12 +40,12 @@ void MemoryNome::write_data_to_memory(const std::vector<uint8_t>& bytes, const m
 }
 metadata_map MemoryNome::check_write_channel_control() {
   if (!memory_write_) return {};
-  // Просто вызываем GetCommandControl у нашего канала записи
+  // РџСЂРѕСЃС‚Рѕ РІС‹Р·С‹РІР°РµРј GetCommandControl Сѓ РЅР°С€РµРіРѕ РєР°РЅР°Р»Р° Р·Р°РїРёСЃРё
   return memory_write_->get_command_control();
 }
 
 void MemoryNome::clear_read_channel_control() {
   if (!memory_read_) return;
-  // Вызываем ClearCommandControl у нашего канала чтения
+  // Р’С‹Р·С‹РІР°РµРј ClearCommandControl Сѓ РЅР°С€РµРіРѕ РєР°РЅР°Р»Р° С‡С‚РµРЅРёСЏ
   memory_read_->clear_command_control();
 }

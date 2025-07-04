@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 // SharedDataTypes.h
 
 
@@ -6,13 +6,13 @@
 #include <vector>
 #include <cstdint>
 #include <map>
-#include <functional> // Для CallbackDataMetaData
+#include <functional> // Р”Р»СЏ CallbackDataMetaData
 #include "interfaces/i_memory_config_channel.h"
 #include <msgpack.hpp>
 
-  // --- Базовые типы для IPC ---
+  // --- Р‘Р°Р·РѕРІС‹Рµ С‚РёРїС‹ РґР»СЏ IPC ---
 
-// --- Идентификаторы типов данных ---
+// --- РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ С‚РёРїРѕРІ РґР°РЅРЅС‹С… ---
 enum data_type_ids : uint32_t {
   e_logger = 0,
   e_date_time_variable = 1,
@@ -23,12 +23,12 @@ enum data_type_ids : uint32_t {
   e_value = 6
 };
 
-// --- Структуры данных ---
+// --- РЎС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С… ---
 //enum class LoggerSendEnumMemory { Error = -1, Info = 0, Warning = 1 };
 MSGPACK_ADD_ENUM(logger_send_enum_memory);
 
 struct IdLogger :public ILoggerChannel {
-  MSGPACK_DEFINE_ARRAY(id, module, log, code); // Исправлено: убран лишний символ
+  MSGPACK_DEFINE_ARRAY(id, module, log, code); // РСЃРїСЂР°РІР»РµРЅРѕ: СѓР±СЂР°РЅ Р»РёС€РЅРёР№ СЃРёРјРІРѕР»
 };
 
 struct IdVector :public IVectorChannel {
@@ -44,7 +44,7 @@ struct DateTimeVariable : public IDateTimeVariableChannel{
 };
 
 struct IdMatrix :public IMatrixChannel {
-  MSGPACK_DEFINE_ARRAY(id, i, j, values); // Исправлено: Id был дважды
+  MSGPACK_DEFINE_ARRAY(id, i, j, values); // РСЃРїСЂР°РІР»РµРЅРѕ: Id Р±С‹Р» РґРІР°Р¶РґС‹
 };
 
 struct RecResult :public IRecResultChannel{
