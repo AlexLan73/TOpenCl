@@ -120,3 +120,67 @@ struct ILogger {
         id = 1; value - кол-во ядер
 7.2 Опрос датчики реализованны по Нашей с тобой схеме через событие (если не помнишь приложу)
     этот блок должен находится в Nexus.Core и к нему должны подключаться все внешние задачи модуля
+--------------------------------------
+1. Дополним модуль CudaModule пока двумя классами их будут много по в зависимости от задач
+1.1. Измерение температуры
+1.2. Кол-во работающих процессоров
+это тестовые классы но они должны являться полным прототипам.
+1.3. Заложим им интерфейс действий 
+   I(придумай сама название)
+     int Id		
+     void start(); void stop(); void pause(); void set_params(здесь map<string, если как в С# obj> ); map<string, если как в С# obj> get(int ind =-1);
+1.4. Эти классы должны реализовывать данный интерфейс
+1.5. Из этих классов по DI должны передавать банные в Logger и в DataContext
+2. Когда в DataContext будет реализована логика под тип DynamycData и подписанные на нее классы по Id elen отрабатывать команды внутри своих классов 
+3. Замена в блоке CudaModule::CudaModule() 
+3.1. То что мы сделали должны перенести в  Nexus.Core
+	а конструктор Nexus.Core передаем название блока к примеру CUDA 
+	нужно будет исправить  		
+  	auto injector = di::make_injector(
+	di::bind<ILogger>.to<Loggers>(название блока), // примеру CUDA
+    	di::bind<ICore>.to<Core>(),
+    	di::bind<IDataContext>.to<DataContext>()
+  	);
+
+3.2. В Nexus.Core создаем управляемый таймер событий и привязываем на него наши переданные от CudaModule (и от других) классы на выполнение
+3.3. В Nexus.Core добавляем функцию для получения запускаемых классов	
+3.4. в  CudaModule убираем  // 3. Пример: регистрируем задачу в ядре, логируем, отправляем данные  nexusCore->addTask([logger, data_context] {
+ переносим в Nexus.Core
+ // 3. Пример: регистрируем задачу в ядре, логируем, отправляем данные
+ nexusCore->addTask([logger, data_context] {
+   IVectorChannel temp{ 0, {70.1, 71.3, 72.0} };
+   IValueChannel cores{ 1, 3840 };
+
+   logger->log({ 0,"CudaModule", "Опрос температуры", logger_send_enum_memory::info });
+   logger->log({ 0,"CudaModule", "Опрос ядер", logger_send_enum_memory::info });
+
+   data_context->send(temp);
+   data_context->send(cores);
+   });
+Сейчас мы должны создать загрузку передаваемых от CudaModule классов
+3.5. И будем тестировать
+Звездочка), все понятно!)
+сможешь помочь?))
+
+CudaModule.lib, clFFTModule.lib, MinskModule.lib
+
+В Nexus.Core:
+Конструктор принимает название блока (например, "CUDA").
+DI связывает интерфейсы с реализациями:
+cpp
+auto injector = di::make_injector(
+    di::bind<ILogger>.to<Loggers>("CUDA"),
+    di::bind<ICore>.to<Core>(),
+    di::bind<IDataContext>.to<DataContext>(),
+    di::bind<ICudaTask>.to<TemperatureTask>(), // для каждого типа задачи
+    di::bind<ICudaTask>.to<ActiveCoresTask>()
+);
+Конструктор принимает название модуля name_module = (например, "CUDA")  
+    di::bind<ILogger>.to<Loggers>(name_module),   <== передеть название модуля. Но такая запись не работает ошибка
+
+Nexus.Core используют CudaModule, clFFTModule, MinskModule и другие
+    di::bind<ICudaTask>.to<TemperatureTask>(), // для каждого типа задачи
+    di::bind<ICudaTask>.to<ActiveCoresTask>()
+Мы не знаем сколько будет TemperatureTask, ActiveCoresTask ....
+Может из Nexus.Core "проктнуть" Di в  CudaModule и там допмсывать нужнве TemperatureTask, ActiveCoresTask
+предложи решение

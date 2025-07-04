@@ -9,6 +9,10 @@
 #include "Logger/Loggers.h"
 #include "DataContracts/DataContext.h"
 #include "interfaces/i_memory_config_channel.h"
+#include "Logger/Loggers.h"
+#include "ActiveCoresTask.h"
+#include "TemperatureTask.h"
+
 namespace di = boost::di;
 
 namespace cuda_module
@@ -18,7 +22,7 @@ namespace cuda_module
 	public:
 		CudaModule();
 	private:
-
+		std::shared_ptr<FactoryUnderTask> m_factory_ = std::shared_ptr<FactoryUnderTask>();
 	};
 
 }

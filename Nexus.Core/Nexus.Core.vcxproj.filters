@@ -36,6 +36,15 @@
     <ClInclude Include="include\Core\ICore.h">
       <Filter>include\Core</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\FactoryUnderTask.h">
+      <Filter>include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\IInject.h">
+      <Filter>include\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\IUnderTask.h">
+      <Filter>include\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.Core.cpp">

@@ -9,7 +9,7 @@
 class Loggers: public ILogger
 {
 public:
-	Loggers(std::string name);
+	explicit Loggers(std::string& name);
 	void log(const ILoggerChannel& msg) override;
 private:
 	std::shared_ptr<spdlog::logger> logger_;

@@ -5,8 +5,8 @@
 #include <iostream>
 #include <string>
 
-
-Loggers::Loggers(std::string name):name_logger_(name)
+//explicit Loggers(const std::string& device) : device_(device) {}
+Loggers::Loggers(std::string& name):name_logger_(name)
 {
 	std::cerr << "  Start LoggerS " << '\n';
 

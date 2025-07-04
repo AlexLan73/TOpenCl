@@ -36,6 +36,12 @@
     <ClInclude Include="include\CudaModule\TempSensor.h">
       <Filter>include\CudaModule</Filter>
     </ClInclude>
+    <ClInclude Include="include\CudaModule\TemperatureTask.h">
+      <Filter>include\CudaModule</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CudaModule\ActiveCoresTask.h">
+      <Filter>include\CudaModule</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CudaModule.cpp">

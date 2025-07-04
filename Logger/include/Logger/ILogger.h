@@ -5,6 +5,9 @@
 #include "interfaces/ISendLogger.h"
 #include "interfaces/i_memory_config_channel.h"
 
+struct  logger_tag {};
+
+
 class ILogger
 {
 public:
