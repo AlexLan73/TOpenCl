@@ -45,6 +45,9 @@
     <ClInclude Include="include\Core\IUnderTask.h">
       <Filter>include\Core</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\EventGenerator.h">
+      <Filter>include\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.Core.cpp">
@@ -54,6 +57,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\Core.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EventGenerator.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

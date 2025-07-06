@@ -22,7 +22,7 @@ namespace cuda_module
 	public:
 		CudaModule();
 	private:
-		std::shared_ptr<FactoryUnderTask> m_factory_ = std::shared_ptr<FactoryUnderTask>();
+		std::shared_ptr<FactoryUnderTask> m_factory_ = std::make_shared<FactoryUnderTask>();
 	};
 
 }

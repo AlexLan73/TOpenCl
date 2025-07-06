@@ -14,5 +14,6 @@ struct IUnderTask : public IInject{
   virtual void stop() = 0;
   virtual void pause() = 0;
   virtual void set_params(const Params&) = 0;
+  virtual void send_data() = 0;
   virtual Params get(int ind = -1) const = 0;
 };

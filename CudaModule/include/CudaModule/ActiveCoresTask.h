@@ -9,15 +9,16 @@ class ActiveCoresTask : public IUnderTask {
   int id_;
   Params params_;
   bool running_ = false;
+  int ind_ = 0;
 public:
   ActiveCoresTask(int id) : id_(id)
   {
-    ILoggerChannel log1{ 1, "ActiveCoresTask", " Di  test!!! ", logger_send_enum_memory::warning };
-    logger_->log(log1);
+//    ILoggerChannel log1{ 1, "ActiveCoresTask", " Di  test!!! ", logger_send_enum_memory::warning };
+//    logger_->log(log1);
 
   }
   int id() const override { return id_; }
-  void start() override { running_ = true; }
+//  void start() override { running_ = true; }
   void stop() override { running_ = false; }
   void pause() override { /* Реализация паузы */ }
   void set_params(const Params& p) override { params_ = p; }
@@ -27,12 +28,20 @@ public:
     return result;
   }
 
-  void test_di()
+  void start() override 
   {
     ILoggerChannel log1{ 1, "ActiveCoresTask", " Di  test!!! ", logger_send_enum_memory::warning };
     logger_->log(log1);
+    data_context_->send("ActiveCoresTask");
+    running_ = true; 
   }
 
+  void send_data() override
+  {
+    ind_++;
+    std::string s = " " + std::to_string(ind_) + "  id= " + std::to_string(id_) + "   ActiveCoresTask";
+    data_context_->send(s);
 
+  }
 };
 
