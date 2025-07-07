@@ -5,11 +5,13 @@
 
 #include <boost/di.hpp>
 
+#include "EventGenerator.h"
 #include "ICore.h"
 #include "Logger/ILogger.h"
 #include "Logger/Loggers.h"
 #include "DataContracts/DataContext.h"
 #include "interfaces/i_memory_config_channel.h"
+#include "interfaces/ISendLogger.h"
 
 #include "FactoryUnderTask.h"
 
@@ -32,5 +34,6 @@ private:
 	std::vector<std::function<void()>> tasks_;
 	std::mutex mutex_;
 	std::string name_module_ = "";
+	std::shared_ptr<EventGenerator> generator_;
 };
 

@@ -4,10 +4,10 @@
 #include <string>
 #include "i_memory_config_channel.h"
 
-class ISendLogger
+struct ISendLogger
 {
-public:
-	virtual ~ISendLogger() = default;
+//	virtual ~ISendLogger() = default;
+	virtual  void send_logger(ILoggerChannel msg) = 0;
 	
 };
 

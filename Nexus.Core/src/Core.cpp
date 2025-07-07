@@ -26,6 +26,9 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
 
   factory_under_task_->inject_to_all_modules(injector);
 
+
+  logger->set_data_context(std::static_pointer_cast<ISendLogger>(data_context));
+
   // 3. Используем логгер
   ILoggerChannel log1{ 1, "CudaModule", " Time max!!! ", logger_send_enum_memory::warning };
   ILoggerChannel log2{ 2, "Nexus.Core", "Start sensor", logger_send_enum_memory::info };
@@ -36,58 +39,52 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   logger->log(log3);
   
   // Предположим, factory_under_task_ — это std::shared_ptr<std::map<Key, std::shared_ptr<IUnderTask>>>
-  //if (factory_under_task_) {
-  //  for (auto& [key, task_ptr] : *factory_under_task_) {
-  //    if (task_ptr) {
-  //      task_ptr->test_di();
-  //    }
-  //  }
+  if (factory_under_task_) {
+      for (const auto& task_ptr : factory_under_task_->get_tasks() | std::views::values) {
+        if (task_ptr) {
+          task_ptr->start();
+        }
+      }
+  }
+
+  generator_ = std::make_shared<EventGenerator>(0.5);
+  // Подписка:
+  if (factory_under_task_) {
+    for (const auto& task_ptr : factory_under_task_->get_tasks() | std::views::values) {
+      if (task_ptr) {
+        // Важно: task_ptr — это shared_ptr<IUnderTask>
+        generator_->subscribe(task_ptr->id(), [task = task_ptr]() { task->send_data(); });
+      }
+    }
+  }
+
+  //// Проверка подписки:
+  //if (generator.has_subscription(task_id)) {
+  //  // ...
   //}
 
+  //// Отписка:
+  //generator.unsubscribe(task_id);
 
-  // 3. Пример: регистрируем задачу в ядре, логируем, отправляем данные
-  //nexusCore->addTask([logger, data_context] {
-  //  IVectorChannel temp{ 0, {70.1, 71.3, 72.0} };
-  //  IValueChannel cores{ 1, 3840 };
+  // Управление:
+  std::cerr << " ------  start()  ----   "  << '\n';
+  generator_->start();
+  std::this_thread::sleep_for(std::chrono::duration<double>(3.0));
 
-  //  logger->log({ 0,"CudaModule", "Опрос температуры", logger_send_enum_memory::info });
-  //  logger->log({ 0,"CudaModule", "Опрос ядер", logger_send_enum_memory::info });
+  std::cerr << " ------  pause()  ----   " << '\n';
+  generator_->pause();
+  std::this_thread::sleep_for(std::chrono::duration<double>(2.0));
 
-  //  data_context->send(temp);
-  //  data_context->send(cores);
-  //  });
+  std::cerr << " ------  pause()  ----   " << '\n';
+  generator_->resume();
+  std::this_thread::sleep_for(std::chrono::duration<double>(3.0));
 
+  std::cerr << " ------  stop()  ----   " << '\n';
+  generator_->stop();
+  std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
 
-
-
-  //// 4. Запуск событийной схемы (например, через boost::signals2)
-  //nexusCore->start();
-
-  //// 5. Ожидание завершения (или интеграция с OpenCLApp)
-  //// ...
-  //nexusCore->stop();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  std::cerr << " ------  dispose()  ----   " << '\n';
+  generator_->dispose();
 
 
 

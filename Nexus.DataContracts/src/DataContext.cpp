@@ -32,3 +32,8 @@ void DataContext::send(const IValueChannel value_channel)
 void DataContext::addTask(std::function<void()> task)
 {
 }
+
+void DataContext::send_logger(ILoggerChannel msg)
+{
+	std::cerr << "  FROM LOGGER  ->  "<< msg.log << '\n';
+}
