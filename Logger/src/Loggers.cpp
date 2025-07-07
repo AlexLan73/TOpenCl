@@ -29,6 +29,8 @@ void Loggers::log(const ILoggerChannel& msg)
 {
   std::string level = to_string(msg.code);
   logger_->info("[ID:{}][{}][{}] {}", msg.id, msg.module, level, msg.log);
+
+  data_context_->send_logger(msg); //send(" LOGGER SEND ==>>  DataContext!!!!! ");
 }
 
 std::string Loggers::to_string(logger_send_enum_memory code) {
