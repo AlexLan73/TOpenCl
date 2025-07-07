@@ -15,6 +15,7 @@ public:
 
 	void addTask(std::function<void()> task) override;
 
+	void send_logger(ILoggerChannel msg) override;
 private:
 };
 

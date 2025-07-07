@@ -50,6 +50,11 @@ public:
     }
   }
 
+  // get map
+  const std::map<int, std::shared_ptr<IUnderTask>>& get_tasks() const {
+    return m_under_task;
+  }
+
 private:
   std::map<int, std::shared_ptr<IUnderTask>> m_under_task= std::map<int, std::shared_ptr<IUnderTask>>();
 };
