@@ -56,9 +56,9 @@ void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) 
       case e_rec_result:
         handler_->on_rec_result_data(oh.get().as<std::vector<RecResult>>());
         break;
-      case e_dt_record:
-        handler_->on_dt_record_data(oh.get().as<std::vector<DtRecord>>());
-        break;
+      //case e_dt_record:
+      //  handler_->on_dt_record_data(oh.get().as<std::vector<DtRecord>>());
+      //  break;
       default:
         std::cerr << "[MemoryProcessor] Received data with unknown type ID: " << typeId << "\n";
         break;

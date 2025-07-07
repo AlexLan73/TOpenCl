@@ -12,16 +12,6 @@
 
   // --- Базовые типы для IPC ---
 
-// --- Идентификаторы типов данных ---
-enum data_type_ids : uint32_t {
-  e_logger = 0,
-  e_date_time_variable = 1,
-  e_vector = 2,
-  e_matrix = 3,
-  e_rec_result = 4,
-  e_dt_record = 5,
-  e_value = 6
-};
 
 // --- Структуры данных ---
 //enum class LoggerSendEnumMemory { Error = -1, Info = 0, Warning = 1 };

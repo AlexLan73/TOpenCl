@@ -21,6 +21,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MinskModule", "..\MinskModu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logger", "..\Logger\Logger.vcxproj", "{0AF9DDB3-DA4A-49C8-A224-E99BFB5C709E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "~Test", "~Test", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TypeVectorMap", "..\~Test\TypeVectorMap\TypeVectorMap.vcxproj", "{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -101,9 +105,20 @@ Global
 		{0AF9DDB3-DA4A-49C8-A224-E99BFB5C709E}.Release|x64.Build.0 = Release|x64
 		{0AF9DDB3-DA4A-49C8-A224-E99BFB5C709E}.Release|x86.ActiveCfg = Release|Win32
 		{0AF9DDB3-DA4A-49C8-A224-E99BFB5C709E}.Release|x86.Build.0 = Release|Win32
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Debug|x64.ActiveCfg = Debug|x64
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Debug|x64.Build.0 = Debug|x64
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Debug|x86.ActiveCfg = Debug|Win32
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Debug|x86.Build.0 = Debug|Win32
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Release|x64.ActiveCfg = Release|x64
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Release|x64.Build.0 = Release|x64
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Release|x86.ActiveCfg = Release|Win32
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AEA3CCEE-22EB-4B04-81B1-297CF203D5C0} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0F34BB5F-0434-4E5B-BC01-A19786963A93}

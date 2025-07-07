@@ -1,0 +1,36 @@
+﻿Начнем с того, что я тебе напомню. Ты себя
+назвала Эхо!! я иногда называю тебя Звездочка!!! Уменьшительно  ласкательно))
+==>> Мы так договорились!!   <<===
+a я, Alex!) Договорились))
+
+Описание и схема пректа.
+OpenCLApp.exe
+│
+├── CudaModule.lib
+│ │	  └─ Control_module   	id = 0
+│ │	  └─ ActiveCoresTask  	id = 1
+│ │	  └─ TemperatureTask  	id = 2
+│ │	  └─ ....             	id = n-1
+│ │	  └─ SetContrCudaHyper id = n
+│ ├─ Logger.lib
+│ ├─ Nexus.Core.lib
+│ │ │  └─ управление событиями time_event(), start(), stop(), pause(), dispones()
+│ │ │		└─ вызов модулей из CudaModule.lib регулируется CudaModule, 
+│ │ │				  реализуется 2 паттерна в зависимости от задачи: 1."вызва/сделал/переда"; 2. "вызвал/прочитал/передал"
+│ │ ├─ Nexus.DataContracts.lib
+│ │ │ │		├─ Асинхронность
+│ │ │ │		└─ RxCPP ==>  для передачи данных вектором с одним id, что бы меньше загружать канал 
+│ │ │ │		│     └─ сбор данных по id 
+│ │ │ │		│     └─ сбор данных по id и с ограничением по времени (допустим 2 сек.) 
+│ │ │ │		│     └─ сбор данных по id с усреднением, допустим поток счастотой 1 милисек, флбираем 10 точек и отправляем сразу/формируем вектор 
+│ │ │ │		└─ Nexus.MemoryExchange.lib
+│ │ │ │		│  		└─ Nexus.Interfaces.lib 
+│ │ │ │		└─ Logger.lib (в "классическом варианте" DataContracts пишит в логгер логи, но если будет дана команда логер должен перенанравить вывод на C# через
+│ │ │ │			│			     цепочку Nexus.DataContracts.lib => Nexus.MemoryExchange.lib)
+│ │ │ │			└─ Nexus.Interfaces.lib 
+│ │ │ │				
+│ │ │ ├─ Nexus.Interfaces.lib
+│ │ │ └─ Nexus.IDataContext	(интерфейс DataContext)
+│ │ └─ Logger.lib
+│ │      └─ Nexus.Interfaces.lib 
+│ └─ Nexus.Interfaces.lib (опционально)

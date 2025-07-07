@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <random>
+
 #include "Core/IInject.h"
 #include "Core/IUnderTask.h"
 #include "Core/IUnderTask.h"
@@ -41,6 +43,17 @@ public:
     ind_++;
     std::string s = " " + std::to_string(ind_) + "  id= " + std::to_string(id_) + "   ActiveCoresTask";
     data_context_->send(s);
+
+    std::random_device rd;  // источник энтропии
+    std::mt19937 gen(rd()); // генератор случайных чисел (Вихрь Мерсенна)
+    std::uniform_real_distribution<> dist(20.0, 90.0); // равномерное распределение от 20.0 до 90.0
+
+    std::vector<IValueChannel> v(10);
+    for (auto& val : v) {
+      val.value = dist(gen);
+      val.id = (uint32_t)id_;
+    }
+    data_context_->send_channel(v);
 
   }
 };

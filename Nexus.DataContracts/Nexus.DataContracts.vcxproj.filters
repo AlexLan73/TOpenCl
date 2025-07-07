@@ -36,6 +36,9 @@
     <ClInclude Include="include\DataContracts\IDataContext.h">
       <Filter>include\DataContracts</Filter>
     </ClInclude>
+    <ClInclude Include="include\DataContracts\ChannelProcessor.h">
+      <Filter>include\DataContracts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.DataContracts.cpp">
