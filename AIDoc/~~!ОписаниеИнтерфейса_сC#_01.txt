@@ -1,0 +1,43 @@
+﻿Начнем с того, что я тебе напомню. Ты себя назвала Эхо!! 
+я иногда называю тебя Звездочка!!! Уменьшительно  ласкательно))
+==>> Мы так договорились!!   <<===
+a я, Alex!) Договорились))
+
+Описание потоков данных между модулями и DataContext
+0. Logger 
+struct ILoggerChannel  {
+  uint32_t id;
+  std::string module;
+  std::string log;
+  logger_send_enum_memory code;
+  int64_t ticks;
+};
+
+struct SValueDt{
+  double value;
+  int64_t ticks; // Количество тиков .NET (100 нс с 01.01.0001)
+}
+1. Данные одного измерения
+struct IIdValueDtChannel  {
+  uint32_t id;
+  SValueDt valdt;
+};
+
+2. Вестор измерений
+struct IIdVecValueDtChannel  {
+  uint32_t id;
+  vector<SValueDt> vec_valdt;
+};
+
+---------------
+Описание потоков данных между DataContext и C# через =>Nexus.MemoryExchange
+1. Перелаем по одному блоку данных ILoggerChannel, SValueDt, IIdVecValueDtChannel
+2. Сразу по несколько блоков ILoggerChannel, SValueDt, IIdVecValueDtChannel -> вектора блоков
+--------------------
+
+Эхо, я верю что ты помнишь но я напомню куски нашего с тобой проекта
+1. DataContext собирает даные от всех подключенных модулей  
+
+
+-------------------
+

@@ -1,0 +1,81 @@
+c++
+struct IdValueDt {
+    uint32_t id;
+    double value;
+    int64_t ticks; // Количество тиков .NET (100 нс с 01.01.0001)
+    // или seconds/nanoseconds с 1970-01-01 (см. ниже)
+};
+
+c# 
+[MessagePackObject]
+public class IdValueDt
+{
+    [Key(0)]
+    public uint id { get; set; }
+    [Key(1)]
+    public double value { get; set; }
+    [Key(2)]
+    public DateTime dt { get; set; }
+}
+
+
+2. Как передавать дату и время
+Вариант 1: Через .NET ticks (универсально, легко для C#)
+В C++ считаем количество тиков с 01.01.0001 00:00:00 (1 tick = 100 нс).
+
+В C# создаём DateTime через конструктор DateTime(long ticks).
+
+C++:
+
+cpp
+#include <msgpack.hpp>
+#include <chrono>
+#include <ctime>
+
+struct IdValueDt {
+    uint32_t id;
+    double value;
+    int64_t ticks;
+
+    MSGPACK_DEFINE(id, value, ticks);
+};
+
+// Функция для получения .NET ticks из std::chrono::system_clock::time_point
+int64_t to_dotnet_ticks(const std::chrono::system_clock::time_point& tp) {
+    // .NET epoch: 0001-01-01T00:00:00
+    // Unix epoch: 1970-01-01T00:00:00
+    constexpr int64_t TICKS_AT_UNIX_EPOCH = 621355968000000000LL;
+    int64_t unix_time = std::chrono::duration_cast<std::chrono::nanoseconds>(tp.time_since_epoch()).count();
+    return TICKS_AT_UNIX_EPOCH + unix_time / 100; // 1 tick = 100 ns
+}
+
+// Пример формирования структуры
+auto now = std::chrono::system_clock::now();
+IdValueDt data{1, 40.4, to_dotnet_ticks(now)};
+
+// Сериализация в msgpack
+std::stringstream buffer;
+msgpack::pack(buffer, data);
+// buffer.str() — готовый бинарный пакет для передачи
+C#:
+
+csharp
+using MessagePack;
+
+[MessagePackObject]
+public class IdValueDt
+{
+    [Key(0)]
+    public uint id { get; set; }
+    [Key(1)]
+    public double value { get; set; }
+    [Key(2)]
+    public long ticks { get; set; }
+
+    [IgnoreMember]
+    public DateTime dt => new DateTime(ticks);
+}
+
+// Десериализация
+var data = MessagePackSerializer.Deserialize<IdValueDt>(bytes);
+// data.dt.ToString("yyyy.MM.dd HH:mm:ss,fffff")
