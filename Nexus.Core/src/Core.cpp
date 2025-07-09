@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "Core/Core.h"
-
+#include <conio.h> 
 #include <iostream>
 #include <mutex>
 #include <utility>
@@ -71,6 +71,7 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   generator_->start();
   std::this_thread::sleep_for(std::chrono::duration<double>(3.0));
 
+/*
   std::cerr << " ------  pause()  ----   " << '\n';
   generator_->pause();
   std::this_thread::sleep_for(std::chrono::duration<double>(2.0));
@@ -82,15 +83,19 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   std::cerr << " ------  stop()  ----   " << '\n';
   generator_->stop();
   std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
+*/
+
+  std::cout << "Нажмите любую клавишу для продолжения...";
+  _getch();  // Ждёт нажатия любой клавиши без необходимости Enter
 
   std::cerr << " ------  dispose()  ----   " << '\n';
   generator_->dispose();
 
 
-
+  
 
 }
-
+/*
 void Core::send(std::string s)
 {
 //	ICore::send(s);
@@ -109,7 +114,7 @@ void Core::send(const IValueChannel value_channel)
 	std::cerr << "  Core send -->> IValueChannel" << '\n';
 	ICore::send(value_channel);
 }
-
+*/
 void Core::start()
 {
 	std::cerr << "  Core start "  << '\n';

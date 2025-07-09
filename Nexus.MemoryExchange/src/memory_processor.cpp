@@ -41,6 +41,7 @@ void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) 
       case e_logger:
         handler_->on_logger_data(oh.get().as<std::vector<IdLogger>>());
         break;
+/*
       case e_vector:
         handler_->on_vector_data(oh.get().as<std::vector<IdVector>>());
         break;
@@ -56,6 +57,7 @@ void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) 
       case e_rec_result:
         handler_->on_rec_result_data(oh.get().as<std::vector<RecResult>>());
         break;
+*/
       //case e_dt_record:
       //  handler_->on_dt_record_data(oh.get().as<std::vector<DtRecord>>());
       //  break;

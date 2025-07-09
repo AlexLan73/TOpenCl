@@ -144,6 +144,7 @@
     <ClInclude Include="include\MemoryExchange\memory_base.h" />
     <ClInclude Include="include\MemoryExchange\memory_nome.h" />
     <ClInclude Include="include\MemoryExchange\memory_processor.h" />
+    <ClInclude Include="include\MemoryExchange\my_msgpack_adapters.h" />
     <ClInclude Include="include\MemoryExchange\shared_data_types.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

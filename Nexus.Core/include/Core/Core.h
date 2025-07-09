@@ -21,9 +21,9 @@ class Core:public ICore
 {
 public:
 	Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_under_task_);
-	void send(std::string s) override;
-	void send(const IVectorChannel vector_channel) override;
-	void send(const IValueChannel value_channel) override;
+//	void send(std::string s) override;
+//	void send(const IVectorChannel vector_channel) override;
+//	void send(const IValueChannel value_channel) override;
 
 
 	void start() override;

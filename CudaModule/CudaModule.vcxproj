@@ -144,6 +144,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\CudaModule\ActiveCoresTask.h" />
     <ClInclude Include="include\CudaModule\MCuda.h" />
+    <ClInclude Include="include\CudaModule\SignalSynth.h" />
     <ClInclude Include="include\CudaModule\TemperatureTask.h" />
     <ClInclude Include="include\CudaModule\TempSensor.h" />
     <ClInclude Include="pch.h" />

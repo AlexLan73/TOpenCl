@@ -26,6 +26,9 @@ public:
     std::cout << "[IMemoryDataHandler] Получены данные Logger, но обработчик не переопределен. Количество: " << data.size() << "\n";
   }
 
+  // Добавьте другие виртуальные методы для каждого типа данных, если они нужны в интерфейсе.
+
+/*
   virtual void on_vector_data(const std::vector<IdVector>& data) {
     std::cout << "[IMemoryDataHandler] Получены данные CudaVector, но обработчик не переопределен. Количество: " << data.size() << "\n";
   }
@@ -49,6 +52,7 @@ public:
   virtual void on_dt_record_data(const std::vector<DtRecord>& data) {
     std::cout << "[IMemoryDataHandler] Получены данные CudaDtRecord, но обработчик не переопределен. Количество: " << data.size() << "\n";
   }
+*/
   // Добавьте другие виртуальные методы для каждого типа данных, если они нужны в интерфейсе.
 
 

@@ -16,4 +16,6 @@ struct IUnderTask : public IInject{
   virtual void set_params(const Params&) = 0;
   virtual void send_data() = 0;
   virtual Params get(int ind = -1) const = 0;
+  metadata_map meta = metadata_map();
+
 };

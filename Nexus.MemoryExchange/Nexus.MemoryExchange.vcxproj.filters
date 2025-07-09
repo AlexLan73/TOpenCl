@@ -45,6 +45,9 @@
     <ClInclude Include="include\MemoryExchange\memory_processor.h">
       <Filter>include\MemoryExchange</Filter>
     </ClInclude>
+    <ClInclude Include="include\MemoryExchange\my_msgpack_adapters.h">
+      <Filter>include\MemoryExchange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.MemoryExchange.cpp">
