@@ -2,7 +2,6 @@
 // memory_base.h
 
 #include "interfaces/i_memory_config_channel.h"
-#include "shared_data_types.h"
 #include <string>
 #include <vector>
 #include <windows.h>    // Для WinAPI

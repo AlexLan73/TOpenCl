@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include <functional> // Для CallbackDataMetaData
 #include "interfaces/i_memory_config_channel.h"
 #include <msgpack.hpp>
 #include <sstream>
@@ -15,7 +14,7 @@
 //MSGPACK_ADD_ENUM(logger_send_enum_memory);
 
 struct IdLogger :public ILoggerChannel {
-  MSGPACK_DEFINE_ARRAY(id, module, log, code, ticks); // Исправлено: убран лишний символ
+  MSGPACK_DEFINE_ARRAY(id, module, log, code, ticks) // Исправлено: убран лишний символ
 };
 
 struct ISValueDt :public SValueDt {

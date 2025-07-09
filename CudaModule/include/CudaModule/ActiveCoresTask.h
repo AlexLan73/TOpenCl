@@ -15,7 +15,7 @@ class ActiveCoresTask : public IUnderTask {
   int ind_ = 0;
   SignalSynth synth; // По умолчанию: A0=1.0, A1=0.1, f=1.0
 public:
-  ActiveCoresTask(int id) : id_(id)
+  explicit ActiveCoresTask(int id) : id_(id)
   {
 //    ILoggerChannel log1{ 1, "ActiveCoresTask", " Di  test!!! ", logger_send_enum_memory::warning };
 //    logger_->log(log1);

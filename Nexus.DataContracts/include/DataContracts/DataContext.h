@@ -11,12 +11,6 @@ class DataContext:public IDataContext
 {
 public:
 	DataContext();
-//	void send(std::string s) override;
-	//void send(const IVectorChannel vector_channel) override;
-	//void send(const IValueChannel value_channel) override;
-
-//	void addTask(std::function<void()> task) override;
-
 	void send_logger(ILoggerChannel msg) override;
 
   template <typename T>
@@ -28,19 +22,18 @@ public:
   void send(const int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) override {
     send<ILoggerChannel>(channel_type, data, meta);
   }
-  void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override {
+  void send(const int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override {
     send<IIdValueDtChannel>(channel_type, data, meta);
   }
-  void send(int channel_type, const IIdVecValueDtChannel& data, const metadata_map& meta = {}) override {
+  void send(const int channel_type, const IIdVecValueDtChannel& data, const metadata_map& meta = {}) override {
     send<IIdVecValueDtChannel>(channel_type, data, meta);
   }
 
   template <typename T>
-  void send(int channel_type, const T& data, const metadata_map& meta = {}) {
+  void send(const int channel_type, const T& data, const metadata_map& meta = {}) {
     std::lock_guard<std::mutex> lock(mutex_);
-//    metadata_map meta = metadata_map_base_;
-    auto it = channels_.find(channel_type);
-    if (it != channels_.end()) {
+
+    if (const auto it = channels_.find(channel_type); it != channels_.end()) {
       std::static_pointer_cast<ChannelProcessor<T>>(it->second)->push(data, meta);
     }
   }
@@ -52,7 +45,6 @@ public:
     }
   }
 
-  //  !!!!!!!  
   void send_channel(std::vector<ILoggerChannel>& data, metadata_map& meta);
   void send_channel(std::vector<IIdValueDtChannel>& data, metadata_map& meta);
   void send_channel(std::vector<IIdVecValueDtChannel>& data, metadata_map& meta);
@@ -66,10 +58,5 @@ private:
 //  тип канала
   std::queue<rec_data_meta_data> output_queue_; // очередь для передачи 
 
-//	std::map<std::string, std::string> m_base;
-//  m_base["type"] = "-999";
-
-  // Клонируем m_base в m_clone
-//  std::map<std::string, std::string> m_clone = m_base;
 };
 

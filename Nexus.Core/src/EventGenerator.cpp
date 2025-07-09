@@ -8,7 +8,7 @@
 #include <chrono>
 #include <map>
 #include <atomic>
-#include <memory>
+#include <ranges>
 
 // Запуск генератора событий
 void EventGenerator::start() {
@@ -30,7 +30,7 @@ void EventGenerator::start() {
         std::lock_guard<std::mutex> lock(mutex_);
         callbacks_copy = callbacks_;
       }
-      for (auto& [id, cb] : callbacks_copy) {
+      for (auto& cb : callbacks_copy | std::views::values) {
         if (cb) cb();
       }
       std::this_thread::sleep_for(std::chrono::duration<double>(interval_));

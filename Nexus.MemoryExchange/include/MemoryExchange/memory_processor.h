@@ -7,11 +7,6 @@
 #include "shared_data_types.h"
 #include "i_memory_data_handler.h"  // Подключаем интерфейс
 #include "memory_nome.h"
-//
-//#include <memory>             // Для std::unique_ptr
-//#include <string>             // Для std::string
-//#include <sstream>            // Для std::stringstream
-//#include <vector>             // Для std::vector
 
 // Этот класс инкапсулирует всю логику приема, десериализации и диспетчеризации.
 class MemoryProcessor {

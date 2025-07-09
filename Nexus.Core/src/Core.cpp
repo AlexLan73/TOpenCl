@@ -5,11 +5,13 @@
 #include <mutex>
 #include <utility>
 
+#include "DataContracts/DataContext.h"
+#include "Logger/Loggers.h"
+
 Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_under_task_)
 		:name_module_(std::move(name_module))
 {
 	std::cerr << "  Start Core " << '\n';
-	//auto _data_context = std::make_shared<DataContext>();
 
   // 1. Разворачиваем DI-контейнер только для CudaModule
   
@@ -90,31 +92,8 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
 
   std::cerr << " ------  dispose()  ----   " << '\n';
   generator_->dispose();
-
-
-  
-
-}
-/*
-void Core::send(std::string s)
-{
-//	ICore::send(s);
-	std::cerr << "  Core send -->> " << s << '\n';
-
 }
 
-void Core::send(const IVectorChannel vector_channel)
-{
-	std::cerr << "  Core send -->> IVectorChannel"  << '\n';
-	ICore::send(vector_channel);
-}
-
-void Core::send(const IValueChannel value_channel)
-{
-	std::cerr << "  Core send -->> IValueChannel" << '\n';
-	ICore::send(value_channel);
-}
-*/
 void Core::start()
 {
 	std::cerr << "  Core start "  << '\n';
@@ -123,13 +102,11 @@ void Core::start()
 	for (auto& task : tasks_) {
 			if (task) task();
 	}
-	
 }
 
 void Core::stop()
 {
 	std::cerr << "  Core stop -->> " << '\n';
-
 }
 
 void Core::addTask(std::function<void()> task)

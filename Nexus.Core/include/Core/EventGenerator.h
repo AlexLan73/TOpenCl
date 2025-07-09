@@ -4,8 +4,6 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <chrono>
-#include <list>
 #include <atomic>
 #include <memory>
 #include <map>

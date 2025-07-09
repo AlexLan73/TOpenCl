@@ -7,24 +7,15 @@
 
 #include "EventGenerator.h"
 #include "ICore.h"
-#include "Logger/ILogger.h"
-#include "Logger/Loggers.h"
-#include "DataContracts/DataContext.h"
-#include "interfaces/i_memory_config_channel.h"
-#include "interfaces/ISendLogger.h"
 
 #include "FactoryUnderTask.h"
 
 namespace di = boost::di;
 
-class Core:public ICore
+class Core final :public ICore
 {
 public:
 	Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_under_task_);
-//	void send(std::string s) override;
-//	void send(const IVectorChannel vector_channel) override;
-//	void send(const IValueChannel value_channel) override;
-
 
 	void start() override;
 	void stop() override;

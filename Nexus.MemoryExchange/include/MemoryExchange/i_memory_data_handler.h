@@ -28,32 +28,6 @@ public:
 
   // Добавьте другие виртуальные методы для каждого типа данных, если они нужны в интерфейсе.
 
-/*
-  virtual void on_vector_data(const std::vector<IdVector>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaVector, но обработчик не переопределен. Количество: " << data.size() << "\n";
-  }
-
-  virtual void on_value_data(const std::vector<IdValue>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaValue, но обработчик не переопределен. Количество: " << data.size() << "\n";
-  }
-
-  virtual void on_date_time_variable_data(const std::vector<DateTimeVariable>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaDateTimeVariable, но обработчик не переопределен. Количество: " << data.size() << "\n";
-  }
-
-  virtual void on_matrix_data(const std::vector<IdMatrix>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaMatrix, но обработчик не переопределен. Количество: " << data.size() << "\n";
-  }
-
-  virtual void on_rec_result_data(const std::vector<RecResult>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные RecResult, но обработчик не переопределен. Количество: " << data.size() << "\n";
-  }
-
-  virtual void on_dt_record_data(const std::vector<DtRecord>& data) {
-    std::cout << "[IMemoryDataHandler] Получены данные CudaDtRecord, но обработчик не переопределен. Количество: " << data.size() << "\n";
-  }
-*/
-  // Добавьте другие виртуальные методы для каждого типа данных, если они нужны в интерфейсе.
 
 
 };
