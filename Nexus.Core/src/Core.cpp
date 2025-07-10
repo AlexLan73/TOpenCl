@@ -30,6 +30,7 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
 
 
   logger->set_data_context(std::static_pointer_cast<ISendLogger>(data_context));
+  
 
   // 3. Используем логгер
   ILoggerChannel log1{ 1, "CudaModule", " Time max!!! ", logger_send_enum_memory::warning };

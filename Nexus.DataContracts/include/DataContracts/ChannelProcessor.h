@@ -36,25 +36,18 @@ public:
 template<typename T>
 class ChannelProcessor : public IChannelProcessor {
 public:
-  ChannelProcessor(std::shared_ptr<std::queue<rec_data_meta_data>> output_queue)
-    : stop_flag_(false), rx_mode_(RxMode::Default), output_queue_(output_queue)
-  {
-    processing_thread_ = std::thread([this]() { this->run(); });
-  }
-
-  ChannelProcessor() = default;
+  ChannelProcessor(std::shared_ptr<std::queue<rec_data_meta_data>> output_queue);
 
   ~ChannelProcessor() override {
     dispose();
   }
 
   void push(const T& data, const metadata_map& meta) {
-    {
-      std::lock_guard<std::mutex> lock(mutex_);
-      queue_.emplace(data, meta);
-    }
+    std::lock_guard lock(mutex_);
+    queue_.emplace(data, meta);
     cv_.notify_one();
   }
+
 
   void set_params(const metadata_map& params) override {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -84,13 +77,96 @@ private:
   using QueueItem = std::pair<T, metadata_map>;
   std::queue<QueueItem> queue_;
   std::mutex mutex_;
+  std::mutex output_mutex_;
   std::condition_variable cv_;
+  std::condition_variable output_cv_;
   std::thread processing_thread_;
-  std::atomic<bool> stop_flag_;
+  std::atomic<bool> stop_flag_ = false;
   RxMode rx_mode_;
   size_t batch_size_ = 10;
   size_t batch_time_ms_ = 750;
   std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
+
+
+  void run() {
+    while (!stop_flag_) {
+      QueueItem item;
+      {
+        std::unique_lock lock(mutex_);
+        cv_.wait(lock, [this] { return stop_flag_ || !queue_.empty(); });
+        if (stop_flag_ && queue_.empty()) break;
+        item = std::move(queue_.front());
+        queue_.pop();
+      }
+      process_single(item); // сразу передаём дальше
+    }
+  }
+
+  void process_single(const QueueItem& item) {
+    rec_data_meta_data block;
+    block.bytes = my_msgpack::serialize(item.first);
+    block.meta_data = item.second;
+    push_to_output(block);
+  }
+
+
+
+
+  //void process_single(const QueueItem& item) {
+  //  rec_data_meta_data block;
+  //  block.bytes = my_msgpack::serialize(item.first);
+  //  block.meta_data = item.second;
+  //  push_to_output(block);
+  //}
+
+
+  void process_batch(const std::vector<QueueItem>& batch) {
+    if (batch.empty()) return;
+    std::vector<T> data_vec;
+    metadata_map meta = batch.back().second;
+    for (const auto& [data, _] : batch)
+      data_vec.push_back(data);
+    rec_data_meta_data block;
+    block.bytes = my_msgpack::serialize(data_vec);
+    block.meta_data = meta;
+    push_to_output(block);
+  }
+
+  void process_average(const std::vector<QueueItem>& batch) {
+    if constexpr (std::is_same_v<T, SValueDt>) {
+      if (batch.empty()) return;
+      double sum = 0;
+      for (const auto& [data, _] : batch)
+        sum += data.value;
+      SValueDt avg;
+      avg.value = sum / batch.size();
+      avg.ticks = batch.back().first.ticks;
+      rec_data_meta_data block;
+      block.bytes = my_msgpack::serialize(avg);
+      block.meta_data = batch.back().second;
+      push_to_output(block);
+    }
+  }
+
+	void push_to_output(const rec_data_meta_data& block) {
+    std::lock_guard<std::mutex> lock(output_mutex_);
+    output_queue_->push(block);
+    output_cv_.notify_one();
+  }
+
+
+  template <typename T>
+  ChannelProcessor(std::shared_ptr<std::queue<rec_data_meta_data>> output_queue)
+    : stop_flag_(false), rx_mode_(RxMode::Default), output_queue_(output_queue)
+  {
+//    output_mutex_ = mutex_;
+    processing_thread_ = std::thread([this]() { this->run(); });
+  }
+
+};
+
+/////////////////////////
+/* В ChannelProcessor
 
   void run() {
     std::vector<QueueItem> batch;
@@ -146,45 +222,7 @@ private:
     }
   }
 
-  void process_single(const QueueItem& item) {
-    rec_data_meta_data block;
-    block.bytes = my_msgpack::serialize(item.first);
-    block.meta_data = item.second;
-    push_to_output(block);
-  }
 
-  void process_batch(const std::vector<QueueItem>& batch) {
-    if (batch.empty()) return;
-    std::vector<T> data_vec;
-    metadata_map meta = batch.back().second;
-    for (const auto& [data, _] : batch)
-      data_vec.push_back(data);
-    rec_data_meta_data block;
-    block.bytes = my_msgpack::serialize(data_vec);
-    block.meta_data = meta;
-    push_to_output(block);
-  }
 
-  void process_average(const std::vector<QueueItem>& batch) {
-    if constexpr (std::is_same_v<T, SValueDt>) {
-      if (batch.empty()) return;
-      double sum = 0;
-      for (const auto& [data, _] : batch)
-        sum += data.value;
-      SValueDt avg;
-      avg.value = sum / batch.size();
-      avg.ticks = batch.back().first.ticks;
-      rec_data_meta_data block;
-      block.bytes = my_msgpack::serialize(avg);
-      block.meta_data = batch.back().second;
-      push_to_output(block);
-    }
-  }
-
-  void push_to_output(const rec_data_meta_data& block) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    output_queue_->push(block);
-  }
-};
-
+*/
 
