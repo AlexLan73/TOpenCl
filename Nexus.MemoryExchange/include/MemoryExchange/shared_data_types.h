@@ -37,69 +37,77 @@ struct IdVecValue {
 
 namespace my_msgpack
 {
-  // SValueDt
-  inline std::vector<uint8_t> serialize_svaluedt(const SValueDt& val) {
+  template<typename T>
+  inline std::vector<uint8_t> serialize(const T& val) {
     std::ostringstream buffer;
     msgpack::pack(buffer, val);
     std::string str = buffer.str();
     return std::vector<uint8_t>(str.begin(), str.end());
   }
 
-  // ILoggerChannel
-  inline std::vector<uint8_t> serialize_logger_channel(const ILoggerChannel& val) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, val);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// SValueDt
+  //inline std::vector<uint8_t> serialize_svaluedt(const SValueDt& val) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, val);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 
-  // IIdValueDtChannel
-  inline std::vector<uint8_t> serialize_id_value_dt_channel(const IIdValueDtChannel& val) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, val);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// ILoggerChannel
+  //inline std::vector<uint8_t> serialize_logger_channel(const ILoggerChannel& val) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, val);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 
-  // IIdVecValueDtChannel
-  inline std::vector<uint8_t> serialize_id_vec_value_dt_channel(const IIdVecValueDtChannel& val) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, val);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// IIdValueDtChannel
+  //inline std::vector<uint8_t> serialize_id_value_dt_channel(const IIdValueDtChannel& val) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, val);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 
-  // std::vector<SValueDt>
-  inline std::vector<uint8_t> serialize_svaluedt_vector(const std::vector<SValueDt>& vals) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, vals);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// IIdVecValueDtChannel
+  //inline std::vector<uint8_t> serialize_id_vec_value_dt_channel(const IIdVecValueDtChannel& val) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, val);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 
-  // std::vector<ILoggerChannel>
-  inline std::vector<uint8_t> serialize_logger_channel_vector(const std::vector<ILoggerChannel>& vals) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, vals);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// std::vector<SValueDt>
+  //inline std::vector<uint8_t> serialize_svaluedt_vector(const std::vector<SValueDt>& vals) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, vals);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 
-  // std::vector<IIdValueDtChannel>
-  inline std::vector<uint8_t> serialize_id_value_dt_channel_vector(const std::vector<IIdValueDtChannel>& vals) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, vals);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// std::vector<ILoggerChannel>
+  //inline std::vector<uint8_t> serialize_logger_channel_vector(const std::vector<ILoggerChannel>& vals) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, vals);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 
-  // std::vector<IIdVecValueDtChannel>
-  inline std::vector<uint8_t> serialize_id_vec_value_dt_channel_vector(const std::vector<IIdVecValueDtChannel>& vals) {
-    std::ostringstream buffer;
-    msgpack::pack(buffer, vals);
-    std::string str = buffer.str();
-    return std::vector<uint8_t>(str.begin(), str.end());
-  }
+  //// std::vector<IIdValueDtChannel>
+  //inline std::vector<uint8_t> serialize_id_value_dt_channel_vector(const std::vector<IIdValueDtChannel>& vals) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, vals);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
+
+  //// std::vector<IIdVecValueDtChannel>
+  //inline std::vector<uint8_t> serialize_id_vec_value_dt_channel_vector(const std::vector<IIdVecValueDtChannel>& vals) {
+  //  std::ostringstream buffer;
+  //  msgpack::pack(buffer, vals);
+  //  std::string str = buffer.str();
+  //  return std::vector<uint8_t>(str.begin(), str.end());
+  //}
 }
 
 

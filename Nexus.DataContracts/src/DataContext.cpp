@@ -3,36 +3,37 @@
 #include "DataContracts/DataContext.h"
 #include "interfaces/i_memory_config_channel.h"
 #include <iostream>
+#include <ranges>
 
 
 DataContext::DataContext()
 {
 	std::cerr << "  Start DataContext " << '\n';
-  metadata_map_base_[name_type_] = "-9999";
   initialization_channels();
 }
 
-void DataContext::send_channel(std::vector<ILoggerChannel>& data, metadata_map& meta)
+void DataContext::dispose()
 {
-  send(0, data, meta);
-}
+  // 1. Остановить все процессоры каналов
+  for (auto& processor : channels_ | std::views::values) {
+    if (processor) {
+      processor->dispose();
+    }
+  }
 
-void DataContext:: send_channel(std::vector<IIdValueDtChannel>& data, metadata_map& meta)
-{
-  send(1, data, meta);
-}
-void  DataContext::send_channel(std::vector<IIdVecValueDtChannel>& data, metadata_map& meta)
-{
-  send(2, data, meta);
-}
+	// 2. Очистить карту каналов
+  channels_.clear();
 
+  // 3. Очистить очередь для передачи данных (если требуется)
+  if (output_queue_) {
+    std::queue<rec_data_meta_data> empty;
+    std::swap(*output_queue_, empty);
+  }
+}
 
 void DataContext::send_logger(ILoggerChannel msg)
 {
-	std::cerr << "  FROM LOGGER  ->  "<< msg.log << '\n';
 }
-
-
 
 void DataContext::initialization_channels()
 {
@@ -60,4 +61,28 @@ void DataContext::initialization_channels()
 
 }
 
+void DataContext::send(int channel_type, const ILoggerChannel& data, const metadata_map& meta ) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  auto it = channels_.find(channel_type);
+  if (it != channels_.end()) {
+    // Приведение к нужному типу ChannelProcessor
+    std::static_pointer_cast<ChannelProcessor<ILoggerChannel>>(it->second)->push(data, meta);
+  }
+}
+
+void DataContext::send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta ) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  auto it = channels_.find(channel_type);
+  if (it != channels_.end()) {
+    std::static_pointer_cast<ChannelProcessor<IIdValueDtChannel>>(it->second)->push(data, meta);
+  }
+}
+
+void DataContext::send(int channel_type, const IIdVecValueDtChannel& data, const metadata_map& meta )  {
+  std::lock_guard<std::mutex> lock(mutex_);
+  auto it = channels_.find(channel_type);
+  if (it != channels_.end()) {
+    std::static_pointer_cast<ChannelProcessor<IIdVecValueDtChannel>>(it->second)->push(data, meta);
+  }
+}
 
