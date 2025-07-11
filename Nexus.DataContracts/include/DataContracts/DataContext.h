@@ -10,10 +10,11 @@
 #include "interfaces/i_memory_config_channel.h"
 
 #include "IDataContext.h"
+#include "Logger/ILogger.h"
 
 class DataContext : public IDataContext {
 public:
-  DataContext();
+  DataContext(const std::shared_ptr<ILogger>& i_logger);
 
   void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) override;
   void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override;
@@ -33,14 +34,18 @@ public:
   }
 
   // Очередь для передачи в C#
-  std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
   void run_transmitter();
+  void start() override;
+
+  std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
+
 private:
   std::mutex mutex_;
 
   std::shared_ptr<std::mutex> output_mutex_;
 	std::shared_ptr<std::condition_variable> output_cv_;
   std::map<int, std::shared_ptr<IChannelProcessor>> channels_;
+  std::shared_ptr<ILogger> i_logger_;
 
   std::thread processing_thread_;
   bool running_ = true;

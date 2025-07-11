@@ -6,9 +6,9 @@
 #include <ranges>
 
 
-DataContext::DataContext()
+DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger): i_logger_(i_logger)
 {
-	std::cerr << "  Start DataContext " << '\n';
+	std::cerr << "  Start DataContext constructor " << '\n';
   output_queue_ = std::make_shared<std::queue<rec_data_meta_data>>();
   output_mutex_ = std::make_shared<std::mutex>();
   output_cv_ = std::make_shared<std::condition_variable>();
@@ -82,6 +82,12 @@ void DataContext::run_transmitter() {
   }
 }
 
+void DataContext::start()
+{
+  ILoggerChannel log1{ 0, "Start DataContext", " Di  test!!! ", logger_send_enum_memory::info };
+  i_logger_->log(log1);
+
+}
 
 
 void DataContext::send(int channel_type, const ILoggerChannel& data, const metadata_map& meta ) {

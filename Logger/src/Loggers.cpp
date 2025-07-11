@@ -9,13 +9,12 @@
 
 #include "interfaces/my_constant.h"
 
-//explicit Loggers(const std::string& device) : device_(device) {}
 Loggers::Loggers(std::string& name):name_logger_(name)
 {
 	std::cerr << "  Start LoggerS " << '\n';
 
-  meta = metadata_map();
-  meta[static_cast<std::string>(NameTypeChannel)] = "0";
+  meta_ = metadata_map();
+  meta_[static_cast<std::string>(NameTypeChannel)] = "0";
 
  // Создаём цветной логгер с именем "module_logger"
   if (!spdlog::get(name_logger_)) {
@@ -45,8 +44,11 @@ void Loggers::log(const ILoggerChannel& msg)
     "[ID:{}][{}][{}] {}",
     msg.id, msg.module, level, msg.log
   );
-  metadata_map meta_ = meta;
-  data_context_->send_logger(msg, meta_);
+
+  if (b_send_channel_) {
+    metadata_map meta = meta_;
+    data_context_->send_logger(msg, meta);
+  }
 //  data_context_->send_logger(msg);
 }
 

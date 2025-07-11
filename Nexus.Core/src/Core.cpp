@@ -25,11 +25,10 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   auto logger = injector.create<std::shared_ptr<ILogger>>();
   auto data_context = injector.create<std::shared_ptr<IDataContext>>();
 
-
   factory_under_task_->inject_to_all_modules(injector);
 
-
   logger->set_data_context(std::static_pointer_cast<ISendLogger>(data_context));
+  data_context->start();
 
   // 3. Используем логгер
   ILoggerChannel log1{ 1, "CudaModule", " Time max!!! ", logger_send_enum_memory::warning };
@@ -72,6 +71,15 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   std::cerr << " ------  start()  ----   "  << '\n';
   generator_->start();
   std::this_thread::sleep_for(std::chrono::duration<double>(3.0));
+
+  logger->start_send_channel();
+  generator_->set_interval(0.1);
+  std::this_thread::sleep_for(std::chrono::duration<double>(2.0));
+  generator_->set_interval(0.35);
+  std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
+  generator_->set_interval(1.0);
+  std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
+  generator_->set_interval(0.1);
 
 //  std::cout << "Нажмите любую клавишу для продолжения...";
   _getch();  // Ждёт нажатия любой клавиши без необходимости Enter

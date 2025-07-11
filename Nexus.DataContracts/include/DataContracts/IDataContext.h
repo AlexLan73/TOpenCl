@@ -10,4 +10,5 @@ public:
   virtual void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) = 0;
   virtual void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) = 0;
   virtual void send(int channel_type, const IIdVecValueDtChannel& data, const metadata_map& meta = {}) = 0;
+  virtual void start() = 0;
 };

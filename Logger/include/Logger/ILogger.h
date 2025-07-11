@@ -18,6 +18,8 @@ public:
   virtual ~ILogger() = default;
   virtual void log(const ILoggerChannel& msg) = 0;
   virtual void set_data_context(std::shared_ptr<ISendLogger> ctx) = 0;
+  virtual void start_send_channel() = 0;
+  virtual void stop_send_channel() = 0;
 };
 
 
