@@ -8,8 +8,8 @@ OpenCLApp.exe
 │
 ├── CudaModule.lib
 │ │	  └─ Control_module   	id = 0
-│ │	  └─ ActiveCoresTask  	id = 1
-│ │	  └─ TemperatureTask  	id = 2
+│ │	  └─ TemperatureTask  	id = 1
+│ │	  └─ ActiveCoresTask  	id = 2
 │ │	  └─ ....             	id = n-1
 │ │	  └─ SetContrCudaHyper id = n
 │ ├─ Logger.lib

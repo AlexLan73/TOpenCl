@@ -30,10 +30,16 @@ public:
 
   // Очередь для передачи в C#
   std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
-
+  void run_transmitter();
 private:
   std::mutex mutex_;
+  std::mutex output_mutex_;
+  std::condition_variable output_cv_;
   std::map<int, std::shared_ptr<IChannelProcessor>> channels_;
+
+  std::thread processing_thread_;
+  bool running_ = true;
+//  std::shared_ptr<ILogger> logger_;
 
   void initialization_channels();
 };
