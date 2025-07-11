@@ -36,13 +36,16 @@ public:
 template<typename T>
 class ChannelProcessor : public IChannelProcessor {
 public:
-  ChannelProcessor(std::shared_ptr<std::queue<rec_data_meta_data>> output_queue)
-    : stop_flag_(false), rx_mode_(RxMode::Default), output_queue_(output_queue)
+  ChannelProcessor(std::shared_ptr<std::queue<rec_data_meta_data>> output_queue, 
+    std::shared_ptr<std::mutex> mutex_transmitter,
+    std::shared_ptr<std::condition_variable> transmitter_cv)
+    : stop_flag_(false), rx_mode_(RxMode::Default), output_queue_(output_queue),
+			mutex_transmitter_(mutex_transmitter), transmitter_cv_(transmitter_cv)
   {
     processing_thread_ = std::thread([this]() { this->run(); });
   }
 
-  ChannelProcessor() = default;
+//  ChannelProcessor() = default;
 
   ~ChannelProcessor() override {
     dispose();
@@ -85,6 +88,10 @@ private:
   std::queue<QueueItem> queue_;
   std::mutex mutex_;
   std::condition_variable cv_;
+
+  std::shared_ptr<std::mutex> mutex_transmitter_;
+  std::shared_ptr<std::condition_variable> transmitter_cv_;
+
   std::thread processing_thread_;
   std::atomic<bool> stop_flag_;
   RxMode rx_mode_;
@@ -121,7 +128,10 @@ private:
       case RxMode::BatchByTime: {
         batch.push_back(item);
         auto now = std::chrono::steady_clock::now();
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_time).count() >= batch_time_ms_) {
+        if (static_cast<int64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(now - last_time).count()) >=
+          static_cast<int64_t>(batch_time_ms_))
+//        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_time).count() >= batch_time_ms_) 
+        {
           process_batch(batch);
           batch.clear();
           last_time = now;
@@ -181,10 +191,16 @@ private:
     }
   }
 
+  //void push_to_output(const rec_data_meta_data& block) {
+  //  std::lock_guard<std::mutex> lock(mutex_);
+  //  output_queue_->push(block);
+  //}
   void push_to_output(const rec_data_meta_data& block) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(*mutex_transmitter_);
     output_queue_->push(block);
+    transmitter_cv_->notify_one();
   }
+
 };
 
 

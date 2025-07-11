@@ -20,7 +20,8 @@ private:
 	std::string to_string(logger_send_enum_memory code);
 	std::string name_logger_;
   std::shared_ptr<ISendLogger> data_context_;
-//  std::weak_ptr<IDataContext>
+  metadata_map  meta;
+
 };
 
 /*

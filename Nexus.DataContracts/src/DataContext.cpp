@@ -10,6 +10,8 @@ DataContext::DataContext()
 {
 	std::cerr << "  Start DataContext " << '\n';
   output_queue_ = std::make_shared<std::queue<rec_data_meta_data>>();
+  output_mutex_ = std::make_shared<std::mutex>();
+  output_cv_ = std::make_shared<std::condition_variable>();
   initialization_channels();
   processing_thread_ = std::thread([this]() { this->run_transmitter(); });
 
@@ -65,15 +67,12 @@ void DataContext::initialization_channels()
 
 }
 
-void  DataContext::run_transmitter() {
+void DataContext::run_transmitter() {
   while (running_) {
     rec_data_meta_data block;
     {
-      std::unique_lock lock(output_mutex_);
-      output_cv_.wait(lock, [this] { return !output_queue_->empty() || !running_; });
-      //ILoggerChannel log1{ 2, "run_transmitte", " test output ", logger_send_enum_memory::error };
-      //logger_->log(log1);
-
+      std::unique_lock<std::mutex> lock(*output_mutex_);
+      output_cv_->wait(lock, [this] { return !output_queue_->empty() || !running_; });
       if (!running_ && output_queue_->empty()) break;
       block = output_queue_->front();
       output_queue_->pop();
@@ -82,6 +81,7 @@ void  DataContext::run_transmitter() {
 //    transmit_to_csharp(block);
   }
 }
+
 
 
 void DataContext::send(int channel_type, const ILoggerChannel& data, const metadata_map& meta ) {

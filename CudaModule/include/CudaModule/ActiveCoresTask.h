@@ -9,7 +9,7 @@
 #include "Logger/ILogger.h"
 
 class ActiveCoresTask : public IUnderTask {
-  int id_;
+  uint32_t id_;
   Params params_;
   bool running_ = false;
   int ind_ = 0;
@@ -43,7 +43,7 @@ public:
   void send_data() override
   {
     ind_++;
-    std::string s = " " + std::to_string(ind_) + "  id= " + std::to_string(id_) + "   ActiveCoresTask";
+//    std::string s = " " + std::to_string(ind_) + "  id= " + std::to_string(id_) + "   ActiveCoresTask";
 //    data_context_->send(s);
 
 //    std::random_device rd;  // источник энтропии
@@ -60,6 +60,9 @@ public:
     v.vec_value_dt.resize(10);
     for (auto& elem : v.vec_value_dt) 
       elem = synth.get();
+
+  	const ILoggerChannel log1{ id_, "ActiveCoresTask", " send vector",  logger_send_enum_memory::info };
+    logger_->log(log1);
 
     data_context_->send(2, v, meta_);
   }

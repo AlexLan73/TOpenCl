@@ -17,8 +17,8 @@ cuda_module::CudaModule::CudaModule()
   auto _temp = std::make_shared<TemperatureTask>(1);
   m_factory_->register_under_task(_temp);
 
-//  auto _activ = std::make_shared<ActiveCoresTask>(2);
-//  m_factory_->register_under_task(_activ);
+  auto _activ = std::make_shared<ActiveCoresTask>(2);
+  m_factory_->register_under_task(_activ);
 
   auto _core = std::make_shared<Core>(name_module, m_factory_);
 

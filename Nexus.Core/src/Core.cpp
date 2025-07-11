@@ -73,21 +73,7 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   generator_->start();
   std::this_thread::sleep_for(std::chrono::duration<double>(3.0));
 
-/*
-  std::cerr << " ------  pause()  ----   " << '\n';
-  generator_->pause();
-  std::this_thread::sleep_for(std::chrono::duration<double>(2.0));
-
-  std::cerr << " ------  pause()  ----   " << '\n';
-  generator_->resume();
-  std::this_thread::sleep_for(std::chrono::duration<double>(3.0));
-
-  std::cerr << " ------  stop()  ----   " << '\n';
-  generator_->stop();
-  std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
-*/
-
-  std::cout << "Нажмите любую клавишу для продолжения...";
+//  std::cout << "Нажмите любую клавишу для продолжения...";
   _getch();  // Ждёт нажатия любой клавиши без необходимости Enter
 
   std::cerr << " ------  dispose()  ----   " << '\n';

@@ -22,19 +22,24 @@ public:
   template <typename T>
   void register_channel(int channel_type) {
     std::lock_guard<std::mutex> lock(mutex_);
-    channels_[channel_type] = std::make_shared<ChannelProcessor<T>>();
+    channels_[channel_type] = std::make_shared<ChannelProcessor<T>>(output_queue_, output_mutex_, output_cv_);
   }
 
   void dispose();
   void send_logger(ILoggerChannel msg) override;
+  void send_logger(const ILoggerChannel& data, const metadata_map& meta = {}) override
+  {
+    send(0, data, meta);
+  }
 
   // Очередь для передачи в C#
   std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
   void run_transmitter();
 private:
   std::mutex mutex_;
-  std::mutex output_mutex_;
-  std::condition_variable output_cv_;
+
+  std::shared_ptr<std::mutex> output_mutex_;
+	std::shared_ptr<std::condition_variable> output_cv_;
   std::map<int, std::shared_ptr<IChannelProcessor>> channels_;
 
   std::thread processing_thread_;
