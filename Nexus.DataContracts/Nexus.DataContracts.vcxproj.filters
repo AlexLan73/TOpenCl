@@ -39,6 +39,9 @@
     <ClInclude Include="include\DataContracts\ChannelProcessor.h">
       <Filter>include\DataContracts</Filter>
     </ClInclude>
+    <ClInclude Include="include\DataContracts\Protocol.h">
+      <Filter>include\DataContracts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.DataContracts.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="src\DataContext.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Protocol.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,8 @@
 #include <ranges>
 
 
-DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger): i_logger_(i_logger)
+DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol)
+    : i_logger_(i_logger),  protocol_(protocol)
 {
 	std::cerr << "  Start DataContext constructor " << '\n';
   output_queue_ = std::make_shared<std::queue<rec_data_meta_data>>();
@@ -15,7 +16,10 @@ DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger): i_logger_(i_
   initialization_channels();
   processing_thread_ = std::thread([this]() { this->run_transmitter(); });
 
+}
 
+void DataContext::on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) {
+  protocol_.process_meta_data(meta_data);
 }
 
 void DataContext::dispose()

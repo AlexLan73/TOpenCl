@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemDefinitionGroup>
 		<ClCompile>
@@ -9,12 +9,16 @@
 			<!-- Пути к заголовочным файлам, которые нужны ядру Nexus -->
 			<AdditionalIncludeDirectories>
 				<!-- Используем переменные окружения -->
-				$(BOOST_ROOT)\;
-				$(VCPKG_ROOT)\installed\x64-windows\include\;
+        $(BOOST_ROOT)\;
+        $(VCPKG_ROOT)\installed\x64-windows\include\;
 
-				$(SolutionDir)..\Logger\include\;
-				$(SolutionDir)..\Nexus.Interfaces\include\;
-				<!-- Пути внутри проекта -->
+        $(SolutionDir)..\Logger\include\;
+        $(SolutionDir)..\Nexus.Interfaces\include\;
+        
+        <!-- CRC++: путь к CRC.h 
+        $(SolutionDir)CRCpp\include\;
+-->
+      <!-- Пути внутри проекта -->
 				$(ProjectDir)include\; <!-- Для своих .h в  -->
 				$(ProjectDir); <!-- Для своих .h в Nexus -->
 				%(AdditionalIncludeDirectories)

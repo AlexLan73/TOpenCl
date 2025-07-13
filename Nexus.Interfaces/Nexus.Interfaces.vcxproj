@@ -141,7 +141,9 @@
     <ClInclude Include="include\interfaces\ISend.h" />
     <ClInclude Include="include\interfaces\ISendLogger.h" />
     <ClInclude Include="include\interfaces\i_memory_config_channel.h" />
+    <ClInclude Include="include\interfaces\kit_enums.h" />
     <ClInclude Include="include\interfaces\my_constant.h" />
+    <ClInclude Include="include\interfaces\TimeCounters.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

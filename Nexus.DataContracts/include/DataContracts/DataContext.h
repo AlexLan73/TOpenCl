@@ -11,10 +11,32 @@
 
 #include "IDataContext.h"
 #include "Logger/ILogger.h"
+#include "Protocol.h"
+
+/*
+ class DataContext : public IDataContext {
+public:
+    DataContext(IProtocol& protocol) : protocol_(protocol) {}
+
+    void on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) {
+        protocol_.process_meta_data(meta_data);
+    }
+
+    // ... остальная логика DataContext ...
+
+private:
+    IProtocol& protocol_;
+};
+
+ 
+ */
+
+
+
 
 class DataContext : public IDataContext {
 public:
-  DataContext(const std::shared_ptr<ILogger>& i_logger);
+  DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol);
 
   void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) override;
   void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override;
@@ -39,7 +61,10 @@ public:
 
   std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
 
+  void on_memory_exchange_meta(const metadata_map& meta_data);
+
 private:
+  IProtocol& protocol_;
   std::mutex mutex_;
 
   std::shared_ptr<std::mutex> output_mutex_;

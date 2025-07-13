@@ -158,8 +158,11 @@ private:
 
   void process_single(const QueueItem& item) {
     rec_data_meta_data block;
-    block.bytes = my_msgpack::serialize(item.first);
+    //block.bytes = my_msgpack::serialize(item.first);
+    auto [data, crc_str] = my_msgpack::serialize_with_crc(item.first);
+    block.bytes = data;
     block.meta_data = item.second;
+    block.meta_data["crc"] = crc_str;
     push_to_output(block);
   }
 
@@ -170,8 +173,16 @@ private:
     for (const auto& [data, _] : batch)
       data_vec.push_back(data);
     rec_data_meta_data block;
-    block.bytes = my_msgpack::serialize(data_vec);
+//    block.bytes = my_msgpack::serialize(data_vec);
+    auto [data, crc_str] = my_msgpack::serialize_with_crc(data_vec);
+    block.bytes = data;
     block.meta_data = meta;
+    block.meta_data["crc"] = crc_str;
+
+//    auto [data, crc_str] = my_msgpack::serialize_with_crc(my_object);
+    // data — сериализованный буфер
+    // crc_str — строка с CRC (например, "1A2B3C4D")
+//    block.meta_data = meta;
     push_to_output(block);
   }
 
@@ -185,8 +196,11 @@ private:
       avg.value = sum / batch.size();
       avg.ticks = batch.back().first.ticks;
       rec_data_meta_data block;
-      block.bytes = my_msgpack::serialize(avg);
+//      block.bytes = my_msgpack::serialize(avg);
+      auto [data, crc_str] = my_msgpack::serialize_with_crc(avg);
+      block.bytes = data;
       block.meta_data = batch.back().second;
+      block.meta_data["crc"] = crc_str;
       push_to_output(block);
     }
   }

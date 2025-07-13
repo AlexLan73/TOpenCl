@@ -7,6 +7,7 @@
 #include "interfaces/i_memory_config_channel.h"
 #include <msgpack.hpp>
 #include <sstream>
+#include "CRC.h"
 #include "my_msgpack_adapters.h"
   
 // --- Структуры данных ---
@@ -38,12 +39,53 @@ struct IdVecValue {
 namespace my_msgpack
 {
   template<typename T>
-  inline std::vector<uint8_t> serialize(const T& val) {
+  inline std::vector<uint8_t> serialize_old(const T& val) {
     std::ostringstream buffer;
     msgpack::pack(buffer, val);
     std::string str = buffer.str();
     return std::vector<uint8_t>(str.begin(), str.end());
   }
+
+  template<typename T>
+  inline std::tuple<std::vector<uint8_t>, std::string> serialize_with_crc(const T& val) {
+    // Сериализация через MessagePack
+    std::ostringstream buffer;
+    msgpack::pack(buffer, val);
+    std::string str = buffer.str();
+    std::vector<uint8_t> data(str.begin(), str.end());
+
+    // Подсчёт CRC32 (можно выбрать другой алгоритм)
+    uint32_t crc = CRC::Calculate(data.data(), data.size(), CRC::CRC_32());
+
+    // Преобразование CRC в hex-строку
+    std::ostringstream crc_ss;
+    crc_ss << std::hex << std::uppercase << crc;
+    std::string crc_str = crc_ss.str();
+
+    // Возврат кортежа (данные, строка CRC)
+    return std::make_tuple(data, crc_str);
+  }
+}
+
+
+/*
+
+
+
+4. Десериализация (приём данных)
+// Для одного объекта
+std::string packed = buffer.str();
+msgpack::object_handle oh = msgpack::unpack(packed.data(), packed.size());
+ILoggerChannel log2;
+oh.get().convert(log2);
+
+// Для вектора
+msgpack::object_handle oh_vec = msgpack::unpack(packed.data(), packed.size());
+std::vector<ILoggerChannel> logs2;
+oh_vec.get().convert(logs2);
+
+
+
 
   //// SValueDt
   //inline std::vector<uint8_t> serialize_svaluedt(const SValueDt& val) {
@@ -108,22 +150,5 @@ namespace my_msgpack
   //  std::string str = buffer.str();
   //  return std::vector<uint8_t>(str.begin(), str.end());
   //}
-}
 
-
-/*
-
-4. Десериализация (приём данных)
-// Для одного объекта
-std::string packed = buffer.str();
-msgpack::object_handle oh = msgpack::unpack(packed.data(), packed.size());
-ILoggerChannel log2;
-oh.get().convert(log2);
-
-// Для вектора
-msgpack::object_handle oh_vec = msgpack::unpack(packed.data(), packed.size());
-std::vector<ILoggerChannel> logs2;
-oh_vec.get().convert(logs2);
-
- 
  */

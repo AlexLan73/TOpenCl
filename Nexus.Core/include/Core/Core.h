@@ -7,7 +7,7 @@
 
 #include "EventGenerator.h"
 #include "ICore.h"
-
+#include "interfaces/TimeCounters.h"
 #include "FactoryUnderTask.h"
 
 namespace di = boost::di;
@@ -16,8 +16,10 @@ class Core final :public ICore
 {
 public:
 	Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_under_task_);
+  void add_count_time();
+  void compare_count_time();
 
-	void start() override;
+  void start() override;
 	void stop() override;
 	void addTask(std::function<void()> task) override;
 
@@ -26,5 +28,8 @@ private:
 	std::mutex mutex_;
 	std::string name_module_ = "";
 	std::shared_ptr<EventGenerator> generator_;
+	std::shared_ptr<EventGenerator> generator_0_5sec_;
+	std::shared_ptr<TimeCounters> time_counters_;
+
 };
 

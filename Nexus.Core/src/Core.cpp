@@ -7,19 +7,29 @@
 
 #include "DataContracts/DataContext.h"
 #include "Logger/Loggers.h"
+#include "DataContracts/Protocol.h"
 
 Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_under_task_)
 		:name_module_(std::move(name_module))
 {
 	std::cerr << "  Start Core " << '\n';
+  generator_0_5sec_ = std::make_shared<EventGenerator>(0.5);
 
-  // 1. Разворачиваем DI-контейнер только для CudaModule
+  generator_0_5sec_->subscribe(0, [this]() { Core::add_count_time(); });
+  generator_0_5sec_->subscribe(0, [this]() { Core::compare_count_time(); });
+
   
+  // 1. Разворачиваем DI-контейнер только для CudaModule
   auto injector = di::make_injector(
     di::bind<ILogger>.to<Loggers>(),
     di::bind<std::string>.named<logger_tag>().to(name_module_),
-    di::bind<IDataContext>.to<DataContext>()
+    di::bind<IDataContext>.to<DataContext>(),
+    di::bind<ITimeCounters>.to<TimeCounters>(),
+    di::bind<IProtocol>.to<Protocol>()
   );
+
+  time_counters_ = injector.create<std::shared_ptr<TimeCounters>>();
+  time_counters_->reset();
 
   // 2. Получаем зависимости через DI
   auto logger = injector.create<std::shared_ptr<ILogger>>();
@@ -87,6 +97,14 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   std::cerr << " ------  dispose()  ----   " << '\n';
   generator_->dispose();
 }
+
+void Core:: add_count_time(){
+  time_counters_->event_timer();
+}
+void Core::compare_count_time() {
+  
+}
+
 
 void Core::start()
 {
