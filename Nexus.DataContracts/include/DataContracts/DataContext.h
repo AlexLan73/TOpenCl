@@ -17,6 +17,7 @@
 class DataContext : public IDataContext {
 public:
   DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol);
+  DataContext(std::shared_ptr<ILogger> i_logger);
 
   void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) override;
   void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override;
@@ -45,7 +46,7 @@ public:
   void set_protocol(std::shared_ptr<IProtocol> protocol) override;
   
 private:
-  IProtocol& protocol_;
+//  IProtocol& protocol_;
   std::mutex mutex_;
 
   std::shared_ptr<std::mutex> output_mutex_;

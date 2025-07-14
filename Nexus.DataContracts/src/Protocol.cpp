@@ -31,7 +31,13 @@ Protocol::Protocol(std::shared_ptr<TimeCounters> counters)
     };
   }
 
-  void Protocol::process_meta_data(const metadata_map& meta_data) {
+Protocol::Protocol(std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> log)
+	:counters_(std::move(counters)), i_logger_(std::move(log))
+{
+
+}
+
+void Protocol::process_meta_data(const metadata_map& meta_data) {
     auto it = meta_data.find("command");
     if (it != meta_data.end()) 
     {

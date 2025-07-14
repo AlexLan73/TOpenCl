@@ -15,6 +15,7 @@
 #include <boost/di.hpp>
 
 #include "IProtocol.h"
+#include "Logger/ILogger.h"
 namespace di = boost::di;
 
 class IDataContext;
@@ -24,6 +25,7 @@ class IDataContext;
 class Protocol : public IProtocol {
 public:
   Protocol(std::shared_ptr<TimeCounters> counters);
+  Protocol(std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> log);
 
   void process_meta_data(const metadata_map& meta_data) override;
   void reset_counters() override;
@@ -40,6 +42,7 @@ private:
   event_command event_current_ = event_command::not_event;
   mode_command mode_current_ = mode_command::not_mode;
   std::shared_ptr<IDataContext> data_context_;
+  std::shared_ptr<ILogger> i_logger_;
 };
 
 /*
