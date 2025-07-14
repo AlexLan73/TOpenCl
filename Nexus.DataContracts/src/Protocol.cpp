@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "DataContracts/Protocol.h"
 
+#include "DataContracts/IDataContext.h"
+
 
 Protocol::Protocol(std::shared_ptr<TimeCounters> counters)
   : counters_(std::move(counters))
@@ -55,6 +57,13 @@ Protocol::Protocol(std::shared_ptr<TimeCounters> counters)
   {
     std::cout << "Ok command  \n";
   }
+
+void Protocol::set_data_context(std::shared_ptr<IDataContext> data_context)
+{
+  data_context_ = data_context;
+  data_context_->start();
+}
+
 
 
 

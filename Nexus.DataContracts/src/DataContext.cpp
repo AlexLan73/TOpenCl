@@ -22,6 +22,12 @@ void DataContext::on_memory_exchange_meta(const std::map<std::string, std::strin
   protocol_.process_meta_data(meta_data);
 }
 
+void DataContext::set_protocol(std::shared_ptr<IProtocol> protocol) 
+{
+  protocol_new_ = protocol;
+  protocol_new_->reset_counters();
+}
+
 void DataContext::dispose()
 {
   // 1. Остановить все процессоры каналов

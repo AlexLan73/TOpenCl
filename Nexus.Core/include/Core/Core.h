@@ -30,6 +30,6 @@ private:
 	std::shared_ptr<EventGenerator> generator_;
 	std::shared_ptr<EventGenerator> generator_0_5sec_;
 	std::shared_ptr<TimeCounters> time_counters_;
-
+	 
 };
 

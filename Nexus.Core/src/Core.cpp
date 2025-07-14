@@ -18,7 +18,6 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   generator_0_5sec_->subscribe(0, [this]() { Core::add_count_time(); });
   generator_0_5sec_->subscribe(0, [this]() { Core::compare_count_time(); });
 
-  
   // 1. Разворачиваем DI-контейнер только для CudaModule
   auto injector = di::make_injector(
     di::bind<ILogger>.to<Loggers>(),
@@ -35,9 +34,19 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   auto logger = injector.create<std::shared_ptr<ILogger>>();
   auto data_context = injector.create<std::shared_ptr<IDataContext>>();
 
+	auto iprotoc  = injector.create<std::shared_ptr<IProtocol>>();
+  iprotoc->set_data_context(data_context);
+  data_context->set_protocol(iprotoc);
+
   factory_under_task_->inject_to_all_modules(injector);
 
   logger->set_data_context(std::static_pointer_cast<ISendLogger>(data_context));
+
+//  dc_prot_.idataContext_ = std::move(data_context);
+//  dc_prot_.iprotocol_ = injector.create<std::shared_ptr<IProtocol>>();
+
+
+
   data_context->start();
 
   // 3. Используем логгер

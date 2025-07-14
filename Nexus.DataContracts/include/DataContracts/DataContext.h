@@ -13,26 +13,6 @@
 #include "Logger/ILogger.h"
 #include "Protocol.h"
 
-/*
- class DataContext : public IDataContext {
-public:
-    DataContext(IProtocol& protocol) : protocol_(protocol) {}
-
-    void on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) {
-        protocol_.process_meta_data(meta_data);
-    }
-
-    // ... остальная логика DataContext ...
-
-private:
-    IProtocol& protocol_;
-};
-
- 
- */
-
-
-
 
 class DataContext : public IDataContext {
 public:
@@ -62,7 +42,8 @@ public:
   std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
 
   void on_memory_exchange_meta(const metadata_map& meta_data);
-
+  void set_protocol(std::shared_ptr<IProtocol> protocol) override;
+  
 private:
   IProtocol& protocol_;
   std::mutex mutex_;
@@ -74,7 +55,7 @@ private:
 
   std::thread processing_thread_;
   bool running_ = true;
-//  std::shared_ptr<ILogger> logger_;
+  std::shared_ptr<IProtocol> protocol_new_;
 
   void initialization_channels();
 };
