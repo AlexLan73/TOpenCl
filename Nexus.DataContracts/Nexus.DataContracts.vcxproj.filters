@@ -45,6 +45,9 @@
     <ClInclude Include="include\DataContracts\IProtocol.h">
       <Filter>include\DataContracts</Filter>
     </ClInclude>
+    <ClInclude Include="include\DataContracts\kit_enums.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.DataContracts.cpp">
