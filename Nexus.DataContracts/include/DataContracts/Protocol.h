@@ -8,7 +8,7 @@
 #include <memory>
 #include "interfaces/TimeCounters.h"
 
-#include "interfaces/kit_enums.h"
+#include "kit_enums.h"
 #include "interfaces/i_memory_config_channel.h"
 //#include "IDCProt.h"
 

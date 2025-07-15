@@ -45,6 +45,9 @@
     <ClInclude Include="include\interfaces\TimeCounters.h">
       <Filter>include\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="include\interfaces\ok_no_error.h">
+      <Filter>include\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.Interfaces.cpp">

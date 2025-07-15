@@ -46,7 +46,7 @@
       <Filter>include\DataContracts</Filter>
     </ClInclude>
     <ClInclude Include="include\DataContracts\kit_enums.h">
-      <Filter>include</Filter>
+      <Filter>include\DataContracts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

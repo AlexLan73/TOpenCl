@@ -19,6 +19,8 @@ public:
 
   void write_data_to_memory(const std::vector<uint8_t>& bytes, const metadata_map& map);
 
+	void initialize_handshake(bool is_client, const std::string& identifier);
+
   // Проверяет метаданные на канале, в который мы ПИШЕМ.
   // Позволяет узнать, прочитал ли получатель наши данные.
   metadata_map check_write_channel_control();

@@ -51,6 +51,9 @@
     <ClInclude Include="include\MemoryExchange\CRC.h">
       <Filter>include\MemoryExchange</Filter>
     </ClInclude>
+    <ClInclude Include="include\MemoryExchange\handshake.h">
+      <Filter>include\MemoryExchange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.MemoryExchange.cpp">
@@ -66,6 +69,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\memory_processor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\handshake.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

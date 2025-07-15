@@ -35,7 +35,7 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   // 3. Используем логгер
   ILoggerChannel log1{ 1, "CudaModule", " Time max!!! ", logger_send_enum_memory::warning };
   ILoggerChannel log2{ 2, "Nexus.Core", "Start sensor", logger_send_enum_memory::info };
-  ILoggerChannel log3{ 3, "Logger", "Error inicial", logger_send_enum_memory::error };
+  ILoggerChannel log3{ 3, "Logger", "Error initial", logger_send_enum_memory::error };
 
   i_logger_->log(log1);
   i_logger_->log(log2);
@@ -65,8 +65,7 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   //if (generator.has_subscription(task_id)) {
   //  // ...
   //}
-
-  //// Отписка:
+  // Отписка:
   //generator.unsubscribe(task_id);
 
   // Управление:
@@ -81,7 +80,7 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
   std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
   generator_->set_interval(1.0);
   std::this_thread::sleep_for(std::chrono::duration<double>(1.0));
-  generator_->set_interval(0.1);
+  generator_->set_interval(0.001);
 
 //  std::cout << "Нажмите любую клавишу для продолжения...";
   _getch();  // Ждёт нажатия любой клавиши без необходимости Enter

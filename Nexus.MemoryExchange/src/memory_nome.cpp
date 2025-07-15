@@ -38,6 +38,39 @@ void MemoryNome::write_data_to_memory(const std::vector<uint8_t>& bytes, const m
     std::cerr << "Error writing data in MemoryNome: " << e.what() << std::endl;
   }
 }
+
+  // MemoryProcessor/MemoryNome:
+// (Псевдокод — вписывай в нужный класс в lib)
+
+  void MemoryNome::initialize_handshake(bool is_client, const std::string & identifier) {
+    if (is_client) {
+      // Пробуем открыть (get_command_control/MapView). Если нет — создаём и пишем:
+      try {
+        metadata_map meta = memory_write_->get_command_control();
+        if (meta.empty()) {
+          // MD не инициализирован — пишем client..., ждём server...
+          meta["state"] = identifier; // "clientCUDA"
+          memory_write_->set_command_control(meta);
+          // ... ждём появления "server..." (ручной polling или через событие)
+        }
+        else if (meta["state"].find("server") != std::string::npos) {
+          // Пришёл ответ от сервера — пишем "ok"
+          meta["command"] = "ok";
+          memory_write_->set_command_control(meta);
+        }
+      }
+      catch (...) {
+        // Память не существует — создать!
+        metadata_map meta;
+        meta["state"] = identifier; // "clientCUDA"
+        memory_write_->set_command_control(meta);
+      }
+    }
+    // Аналогично для сервера (роль и значения меняются)
+  }
+
+
+
 metadata_map MemoryNome::check_write_channel_control() {
   if (!memory_write_) return {};
   // Просто вызываем GetCommandControl у нашего канала записи
