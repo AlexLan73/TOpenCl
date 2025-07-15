@@ -39,5 +39,10 @@ struct IIdVecValueDtChannel  {
 1. DataContext собирает даные от всех подключенных модулей  
 
 
+!!!!!!!, что все нормально (или другой вариант стерт блок metadata, или сделаем дополнительное прерывание ) 
 -------------------
 
+ 5. В DataContext проступают данные от C# (metadata)
+- происходит анализ 1. это ответ ok от C# или 2. комманда на выполнение чего либо что относится к данному модулю (пример CudaModule). 
+  вызвывется Control_module с(id = 0)
+  Control_module этот модуль упраляет всеми другими через id ActiveCoresTask(id=1),TemperatureTask(id=2),... SetContrCudaHyper(id=n) 

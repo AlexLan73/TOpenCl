@@ -40,11 +40,11 @@ public:
   }
 
   // Метод для передачи инжектора всем зарегистрированным модулям
-  template<typename Injector>
-  void inject_to_all_modules(const Injector& injector) {
+//  template<typename Injector>
+  void inject_to_all_modules(const std::shared_ptr<ILogger>& logger, const std::shared_ptr<IDataContext>& data_context) {
     for (auto& module : m_under_task | std::views::values) {
       if (module) {
-        module->inject(injector);
+        module->inject(logger, data_context);
       }
     }
   }
