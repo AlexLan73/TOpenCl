@@ -143,6 +143,7 @@
     <ClInclude Include="include\DataContracts\ChannelProcessor.h" />
     <ClInclude Include="include\DataContracts\DataContext.h" />
     <ClInclude Include="include\DataContracts\IDataContext.h" />
+    <ClInclude Include="include\DataContracts\IProtocol.h" />
     <ClInclude Include="include\DataContracts\Protocol.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

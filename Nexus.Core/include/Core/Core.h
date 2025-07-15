@@ -3,14 +3,11 @@
 #include <vector>
 #include <mutex>
 
-#include <boost/di.hpp>
-
 #include "EventGenerator.h"
 #include "ICore.h"
 #include "interfaces/TimeCounters.h"
 #include "FactoryUnderTask.h"
-
-namespace di = boost::di;
+#include "Logger/Loggers.h"
 
 class Core final :public ICore
 {
@@ -30,6 +27,9 @@ private:
 	std::shared_ptr<EventGenerator> generator_;
 	std::shared_ptr<EventGenerator> generator_0_5sec_;
 	std::shared_ptr<TimeCounters> time_counters_;
+	std::shared_ptr<ILogger> i_logger_;
+	std::shared_ptr<IDataContext> i_data_context_;
+	std::shared_ptr<IProtocol> i_protocol_;
 
 };
 

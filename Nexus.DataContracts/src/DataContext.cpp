@@ -7,7 +7,7 @@
 
 
 DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol)
-    : i_logger_(i_logger),  protocol_(protocol)
+    : i_logger_(i_logger) //,  protocol_(protocol)
 {
 	std::cerr << "  Start DataContext constructor " << '\n';
   output_queue_ = std::make_shared<std::queue<rec_data_meta_data>>();
@@ -18,8 +18,27 @@ DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& pr
 
 }
 
+DataContext::DataContext(std::shared_ptr<ILogger> i_logger) : i_logger_(i_logger)
+{
+  std::cerr << "  Start DataContext constructor 2 " << '\n';
+  output_queue_ = std::make_shared<std::queue<rec_data_meta_data>>();
+  output_mutex_ = std::make_shared<std::mutex>();
+  output_cv_ = std::make_shared<std::condition_variable>();
+  initialization_channels();
+  processing_thread_ = std::thread([this]() { this->run_transmitter(); });
+
+}
+
+
+
 void DataContext::on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) {
-  protocol_.process_meta_data(meta_data);
+//  protocol_.process_meta_data(meta_data);
+}
+
+void DataContext::set_protocol(std::shared_ptr<IProtocol> protocol) 
+{
+  protocol_new_ = protocol;
+  protocol_new_->reset_counters();
 }
 
 void DataContext::dispose()

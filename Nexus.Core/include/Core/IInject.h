@@ -5,12 +5,9 @@
 
 struct  IInject
 {
-  void inject(const auto& injector) { // универсальный метод для DI
-    // Получаем зависимости из инжектора
-    logger_ = injector.template create<std::shared_ptr<ILogger>>();
-    data_context_ = injector.template create<std::shared_ptr<IDataContext>>();
-    // Можно получить и другие зависимости
-
+  void inject(const std::shared_ptr<ILogger>& logger, const std::shared_ptr<IDataContext>& data_context) { // универсальный метод для DI
+    logger_ = logger;;
+    data_context_ = data_context;
   }
   std::shared_ptr<ILogger> logger_;
   std::shared_ptr<IDataContext> data_context_;

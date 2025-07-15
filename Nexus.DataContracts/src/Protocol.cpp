@@ -1,35 +1,37 @@
 ﻿#include "pch.h"
 #include "DataContracts/Protocol.h"
 
+#include "DataContracts/IDataContext.h"
 
-Protocol::Protocol(std::shared_ptr<TimeCounters> counters)
-  : counters_(std::move(counters))
-  {
-    command_map_ = {
-        {protocol_command::not_command, [this]() { std::cout << " Not command  \n"; }},
-        {protocol_command::ok_command, [this]() { this->ok_command(); }},
-        {protocol_command::work_ok_command, [this]() { std::cout << " Work OK Command  \n"; }},
-        {protocol_command::disposable_command, [this]() {  std::cout << " Disposable Command  \n"; }}
-    };
+Protocol::Protocol(std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> log)
+	:counters_(std::move(counters)), i_logger_(std::move(log))
+{
+  command_map_ = {
+      {protocol_command::not_command, [this]() { std::cout << " Not command  \n"; }},
+      {protocol_command::ok_command, [this]() { this->ok_command(); }},
+      {protocol_command::work_ok_command, [this]() { std::cout << " Work OK Command  \n"; }},
+      {protocol_command::disposable_command, [this]() {  std::cout << " Disposable Command  \n"; }}
+  };
 
-    event_map_ = {
-        {event_command::not_event, [this]() { std::cout << " Not Event  \n"; }},
-        {event_command::start_event, [this]() { std::cout << " Start Event  \n"; }},
-        {event_command::stop_event, [this]() { std::cout << " Stop Event  \n"; }},
-        {event_command::pause_event, [this]() { std::cout << " Pause Event   \n"; }},
-        {event_command::reset_event, [this]() {  std::cout << " Reset Event   \n"; }}
-    };
+  event_map_ = {
+      {event_command::not_event, [this]() { std::cout << " Not Event  \n"; }},
+      {event_command::start_event, [this]() { std::cout << " Start Event  \n"; }},
+      {event_command::stop_event, [this]() { std::cout << " Stop Event  \n"; }},
+      {event_command::pause_event, [this]() { std::cout << " Pause Event   \n"; }},
+      {event_command::reset_event, [this]() {  std::cout << " Reset Event   \n"; }}
+  };
 
-    mode_map_ = {
-        {mode_command::not_mode, [this]() { std::cout << " Not Mode  \n"; }},
-        {mode_command::initial_mode, [this]() { std::cout << " Initial Mode  \n"; }},
-        {mode_command::work_mode, [this]() { std::cout << " Work Mode  \n"; }},
-        {mode_command::disposable_mode, [this]() { std::cout << " Disposable Mode   \n"; }},
-        {mode_command::restart_mode, [this]() {  std::cout << " Restart Mode   \n"; }}
-    };
-  }
+  mode_map_ = {
+      {mode_command::not_mode, [this]() { std::cout << " Not Mode  \n"; }},
+      {mode_command::initial_mode, [this]() { std::cout << " Initial Mode  \n"; }},
+      {mode_command::work_mode, [this]() { std::cout << " Work Mode  \n"; }},
+      {mode_command::disposable_mode, [this]() { std::cout << " Disposable Mode   \n"; }},
+      {mode_command::restart_mode, [this]() {  std::cout << " Restart Mode   \n"; }}
+  };
 
-  void Protocol::process_meta_data(const metadata_map& meta_data) {
+}
+
+void Protocol::process_meta_data(const metadata_map& meta_data) {
     auto it = meta_data.find("command");
     if (it != meta_data.end()) 
     {
@@ -55,6 +57,13 @@ Protocol::Protocol(std::shared_ptr<TimeCounters> counters)
   {
     std::cout << "Ok command  \n";
   }
+
+void Protocol::set_data_context(std::shared_ptr<IDataContext> data_context)
+{
+  data_context_ = data_context;
+  data_context_->start();
+}
+
 
 
 
