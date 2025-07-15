@@ -13,14 +13,13 @@
 #include "ActiveCoresTask.h"
 #include "TemperatureTask.h"
 
-namespace di = boost::di;
-
 namespace cuda_module
 {
 	class CudaModule
 	{
 	public:
 		CudaModule();
+
 	private:
 		std::shared_ptr<FactoryUnderTask> m_factory_ = std::make_shared<FactoryUnderTask>();
 	};

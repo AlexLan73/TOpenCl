@@ -17,14 +17,11 @@ class TemperatureTask : public IUnderTask {
 //  std::uniform_real_distribution<> dist;
 
 public:
-  TemperatureTask(uint32_t id) : id_(id)
+  explicit TemperatureTask(uint32_t id) : id_(id)
   {
-//    std::random_device rd;  // источник энтропии
-//    std::mt19937 gen(rd()); // генератор случайных чисел (Вихрь Мерсенна)
-//    dist = std::uniform_real_distribution<>(20.0, 90.0); // равномерное распределение от 20.0 до 90.0
 
   }
-  ~TemperatureTask() {};
+  ~TemperatureTask() override {};
   int id() const override { return static_cast<int>(id_); }
 //  void start() override { running_ = true;     /* Запуск измерения */ }//
   void stop() override { running_ = false; }
@@ -39,7 +36,7 @@ public:
 
   void start() override
   {
-    ILoggerChannel log1{ id_, "TemperatureTask", " Di  test!!! ", logger_send_enum_memory::warning };
+	  const ILoggerChannel log1{ id_, "TemperatureTask", " Di  test!!! ", logger_send_enum_memory::warning };
     logger_->log(log1);
 //    data_context_->send("TemperatureTask");
 
@@ -98,9 +95,7 @@ private:
       v0.ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count();
       value_dt = v0;
       id = static_cast<uint32_t>(id_);
-
       }
-
 
  struct IIdValueDtChannel {
   uint32_t id;

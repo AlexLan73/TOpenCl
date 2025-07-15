@@ -64,6 +64,11 @@ void Protocol::set_data_context(std::shared_ptr<IDataContext> data_context)
   data_context_->start();
 }
 
+void Protocol::init_handshake()
+{
+
+}
+
 
 
 

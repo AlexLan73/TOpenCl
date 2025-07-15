@@ -60,7 +60,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Protocol.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

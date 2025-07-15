@@ -19,8 +19,9 @@ public:
   template<typename T>
   void send_data(data_type_ids type_id, const std::vector<T>& data);
 
-  metadata_map check_write_channel();
-  void clear_read_channel();
+  metadata_map check_write_channel() const;
+  void clear_read_channel() const;
+  void initialize_handshake_client() const;
 
 private:
   // Внутренний метод, который вызывается MemoryNome при получении сырых данных
@@ -28,6 +29,7 @@ private:
 
   std::unique_ptr<MemoryNome> memory_nome_;
   IMemoryDataHandler* handler_; // Указатель на внешний обработчик
+//  std::string name_module_;
 };
 
 // Реализацию шаблонного метода лучше оставить в заголовочном файле
@@ -45,6 +47,7 @@ void MemoryProcessor::send_data(const data_type_ids type_id, const std::vector<T
   metadata["size"] = std::to_string(bytes.size());
 
   memory_nome_->write_data_to_memory(bytes, metadata); // Запись в MMF
+  
 }
 
 

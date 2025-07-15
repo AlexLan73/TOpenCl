@@ -42,16 +42,13 @@
     <ClInclude Include="include\MemoryExchange\memory_nome.h">
       <Filter>include\MemoryExchange</Filter>
     </ClInclude>
-    <ClInclude Include="include\MemoryExchange\memory_processor.h">
-      <Filter>include\MemoryExchange</Filter>
-    </ClInclude>
     <ClInclude Include="include\MemoryExchange\my_msgpack_adapters.h">
       <Filter>include\MemoryExchange</Filter>
     </ClInclude>
     <ClInclude Include="include\MemoryExchange\CRC.h">
       <Filter>include\MemoryExchange</Filter>
     </ClInclude>
-    <ClInclude Include="include\MemoryExchange\handshake.h">
+    <ClInclude Include="include\MemoryExchange\memory_processor.h">
       <Filter>include\MemoryExchange</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,9 +66,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\memory_processor.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\handshake.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

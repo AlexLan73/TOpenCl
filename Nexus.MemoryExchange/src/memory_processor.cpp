@@ -5,7 +5,8 @@
 #include "MemoryExchange/memory_processor.h"
 
 MemoryProcessor::MemoryProcessor(const std::string& name, server_client role, IMemoryDataHandler* handler)
-  : handler_(handler) {
+  : handler_(handler){
+
   if (!handler_) {
     throw std::invalid_argument("Handler (IMemoryDataHandler) cannot be nullptr.");
   }
@@ -78,14 +79,20 @@ void MemoryProcessor::on_raw_data_received(const rec_data_meta_data& dMetaData) 
   }
 }
 
-metadata_map MemoryProcessor::check_write_channel() 
+metadata_map MemoryProcessor::check_write_channel() const
 {
   if (!memory_nome_) return {};
   return memory_nome_->check_write_channel_control();
 }
 
-void MemoryProcessor::clear_read_channel() {
+void MemoryProcessor::clear_read_channel() const
+{
   if (!memory_nome_) return;
   memory_nome_->clear_read_channel_control();
+}
+
+void MemoryProcessor::initialize_handshake_client() const
+{
+  memory_nome_->initialize_handshake(true);
 }
 

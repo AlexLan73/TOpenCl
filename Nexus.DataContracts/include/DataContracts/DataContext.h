@@ -12,12 +12,13 @@
 #include "IDataContext.h"
 #include "Logger/ILogger.h"
 #include "Protocol.h"
+#include "MemoryExchange/memory_processor.h"
 
 
 class DataContext : public IDataContext {
 public:
-  DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol);
-  DataContext(std::shared_ptr<ILogger> i_logger);
+//  DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol);
+  DataContext(std::string name_module, std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> i_logger);
 
   void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) override;
   void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override;
@@ -42,7 +43,7 @@ public:
 
   std::shared_ptr<std::queue<rec_data_meta_data>> output_queue_;
 
-  void on_memory_exchange_meta(const metadata_map& meta_data);
+  void on_memory_exchange_meta(const metadata_map& meta_data) const;
   void set_protocol(std::shared_ptr<IProtocol> protocol) override;
   
 private:
@@ -59,5 +60,18 @@ private:
   std::shared_ptr<IProtocol> protocol_new_;
 
   void initialization_channels();
+
+  std::shared_ptr<MemoryProcessor> memory_processor_;
+  std::string name_module_;
+  std::shared_ptr<TimeCounters> counters_;
+
 };
 
+/*
+ auto memory_processor = std::make_unique<MemoryProcessor>(
+    memory_name,        // std::string: имя памяти
+    my_role,            // server_client: роль (server/client)
+    this                // IMemoryDataHandler* (DataContext наследует IMemoryDataHandler)
+);
+ 
+ */

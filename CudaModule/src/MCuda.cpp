@@ -5,6 +5,8 @@
 #include "DataContracts/IDataContext.h"
 #include <iostream>
 
+#include "interfaces/ModuleNameProvider.h"
+
 cuda_module::CudaModule::CudaModule()
 {
 
@@ -13,6 +15,7 @@ cuda_module::CudaModule::CudaModule()
 	//auto q_ = std::make_unique<Loggers>();
 
   std::string name_module = "CUDA";
+  ModuleNameProvider::instance().set_name(name_module);
 
   auto _temp = std::make_shared<TemperatureTask>(1);
   m_factory_->register_under_task(_temp);

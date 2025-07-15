@@ -15,14 +15,17 @@ Core::Core(std::string name_module, std::shared_ptr<FactoryUnderTask> factory_un
 	std::cerr << "  Start Core " << '\n';
   generator_0_5sec_ = std::make_shared<EventGenerator>(0.5);
 
+	time_counters_ = std::make_shared<TimeCounters>();
+  time_counters_->reset();
+
   generator_0_5sec_->subscribe(0, [this]() { Core::add_count_time(); });
-  generator_0_5sec_->subscribe(0, [this]() { Core::compare_count_time(); });
+  generator_0_5sec_->subscribe(1, [this]() { Core::compare_count_time(); });
+
 
   i_logger_ = std::make_shared<Loggers>(name_module_);
-  i_data_context_ = std::make_shared<DataContext>(i_logger_);
 
-  time_counters_ = std::make_shared<TimeCounters>();
-  time_counters_->reset();
+  i_data_context_ = std::make_shared<DataContext>(name_module_, time_counters_, i_logger_);
+
 
   i_protocol_ = std::make_shared<Protocol>(time_counters_, i_logger_);
 

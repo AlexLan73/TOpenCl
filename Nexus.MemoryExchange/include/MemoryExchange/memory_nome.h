@@ -9,7 +9,8 @@
 #include <string>
 #include <memory>       // Для std::unique_ptr
 
-class MemoryNome {
+
+class MemoryNome{
 public:
   MemoryNome(const std::string& name_memory, server_client role, callback_data_meta_data callback);
   ~MemoryNome() = default;
@@ -19,7 +20,7 @@ public:
 
   void write_data_to_memory(const std::vector<uint8_t>& bytes, const metadata_map& map);
 
-	void initialize_handshake(bool is_client, const std::string& identifier);
+	void initialize_handshake(bool is_client, std::string identifier="");
 
   // Проверяет метаданные на канале, в который мы ПИШЕМ.
   // Позволяет узнать, прочитал ли получатель наши данные.
@@ -31,6 +32,9 @@ public:
 private:
   std::unique_ptr<MemoryBase> memory_read_; // Используем unique_ptr
   std::unique_ptr<MemoryBase> memory_write_; // Используем unique_ptr
+  std::string client_name_ram_ = "client";
+  std::string name_module_;
+
 };
 
 

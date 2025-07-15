@@ -5,7 +5,7 @@
 #include <iostream>
 #include <ranges>
 
-
+/*
 DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol)
     : i_logger_(i_logger) //,  protocol_(protocol)
 {
@@ -17,22 +17,32 @@ DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& pr
   processing_thread_ = std::thread([this]() { this->run_transmitter(); });
 
 }
-
-DataContext::DataContext(std::shared_ptr<ILogger> i_logger) : i_logger_(i_logger)
+*/
+DataContext::DataContext(std::string name_module, 
+							std::shared_ptr<TimeCounters> counters, 
+							std::shared_ptr<ILogger> i_logger) : name_module_(name_module),
+						i_logger_(i_logger)
 {
   std::cerr << "  Start DataContext constructor 2 " << '\n';
   output_queue_ = std::make_shared<std::queue<rec_data_meta_data>>();
   output_mutex_ = std::make_shared<std::mutex>();
   output_cv_ = std::make_shared<std::condition_variable>();
+  memory_processor_ = std::make_shared<MemoryProcessor>(
+    name_module_,        // std::string: имя памяти
+    server_client::client,            // server_client: роль (server/client)
+    this                // IMemoryDataHandler* (DataContext наследует IMemoryDataHandler)
+  );
+
   initialization_channels();
   processing_thread_ = std::thread([this]() { this->run_transmitter(); });
-
+  memory_processor_->initialize_handshake_client();
 }
 
 
 
-void DataContext::on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) {
-//  protocol_.process_meta_data(meta_data);
+void DataContext::on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) const
+{
+  protocol_new_->process_meta_data(meta_data);
 }
 
 void DataContext::set_protocol(std::shared_ptr<IProtocol> protocol) 

@@ -3,11 +3,12 @@
 #include <memory>
 #include "interfaces/ISendLogger.h"
 #include "interfaces/i_memory_config_channel.h"
+#include "MemoryExchange/i_memory_data_handler.h"
 //#include "Protocol.h"
 
 class IProtocol;
 
-class IDataContext:public ISendLogger {
+class IDataContext:public ISendLogger, public IMemoryDataHandler {
 public:
   virtual ~IDataContext() = default;
   virtual void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) = 0;
