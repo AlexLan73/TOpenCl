@@ -193,3 +193,126 @@ std::string MemoryBase::format_control_string(const metadata_map& metadata) {
   return ss.str();
 }
 
+/*
+ 
+ Вот как можно переписать метод event_loop для MemoryBase с обработкой команд и автоматическим ответом, согласно вашему сценарию обмена и handshake-протоколу.
+
+### Переписанный event_loop с автоматической обработкой handshake-команд
+
+В этом примере:
+
+- Ключевые слова и идентификаторы команд вынесены в enum или constexpr для расширяемости.
+- Имя зарезервированного модуля (например, "CUDA") берётся из синглтона (ModuleNameProvider::instance().get_name()).
+- Автоматически анализируются управляющие команды ("state", "workd" и т.д.).
+- Ответы формируются прямо в метаданных и отправляются обратно в память.
+- Все остальные случаи передаются в call_back_, как и просили.
+
+```cpp
+void MemoryBase::event_loop() {
+    constexpr char handshake_prefix[] = "server";
+    const std::string myModule = ModuleNameProvider::instance().get_name();
+    const std::string myHandshakeKey = std::string(handshake_prefix) + myModule; // "serverCUDA" и др.
+
+    // При необходимости вынесите commands в отдельный enum/таблицу.
+    enum class MetaCommand { HandshakeOk, WorkOk, NotHandled };
+
+    auto analyze_and_respond = [&](metadata_map& metadata) -> MetaCommand {
+        // 1. Handshake: "state" == "serverCUDA"
+        auto itState = metadata.find("state");
+        if (itState != metadata.end() && itState->second == myHandshakeKey) {
+            // Ответить "ok" в MD
+            metadata["command"] = "ok";
+            set_command_control(metadata);
+            return MetaCommand::HandshakeOk;
+        }
+
+        // 2. Work command: "workd" == ""
+        auto itWorkd = metadata.find("workd");
+        if (itWorkd != metadata.end() && itWorkd->second.empty()) {
+            metadata["workd"] = "ok";
+            set_command_control(metadata);
+            return MetaCommand::WorkOk;
+        }
+
+        // 3. Любая другая команда
+        return MetaCommand::NotHandled;
+    };
+
+    while (running_.load()) {
+        if (WaitForSingleObject(h_event_, 1000) == WAIT_OBJECT_0) {
+            if (!running_.load()) break;
+
+            metadata_map metadata = get_command_control();
+
+            if (metadata.empty()) {
+                if (call_back_) call_back_({ {}, metadata });
+                continue;
+            }
+
+            // Автоматический анализ и ответ на handshake/workd
+            if (analyze_and_respond(metadata) != MetaCommand::NotHandled) {
+                // Перехватили и отработали — не передаём наверх
+                continue;
+            }
+
+            // Стандартное чтение данных, если есть
+            size_t dataSize = 0;
+            auto it = metadata.find("size");
+            if (it != metadata.end()) dataSize = std::stoul(it->second);
+
+            std::vector data;
+            if (dataSize > 0) {
+                data.resize(dataSize);
+                LPVOID pDataBuf = MapViewOfFile(h_data_map_file_, FILE_MAP_READ, 0, 0, dataSize);
+                if (pDataBuf != nullptr) {
+                    memcpy(data.data(), pDataBuf, dataSize);
+                    UnmapViewOfFile(pDataBuf);
+                } else {
+                    data.clear();
+                    std::cerr << "Ошибка: не удалось получить MapViewOfFile для данных размером " << dataSize << std::endl;
+                }
+            }
+
+            // Любая другая ситуация — колбэк в приложение
+            if (call_back_) call_back_({ data, metadata });
+        }
+    }
+}
+```
+
+### Особенности
+
+- Ключевые handshake-команды ("state", "workd") легко расширять через enum или map.
+- Ответы отправляются обратно только если команда известна и поддерживается.
+- Вся остальная логика (обработка данных, нештатных команд) — через основной call_back_.
+
+**Если появятся дополнительные команды (например, "reset", "pause" и т.д.), просто добавьте их в analyze_and_respond. Такой подход делает логику максимально расширяемой и централизованной.**
+
+Если нужны заготовки кода для enum команд или шаблон для расширения, сообщите — подготовлю!
+
+[1] https://pplx-res.cloudinary.com/image/private/user_uploads/73552077/5a98c447-6a4a-4a1e-b00c-92f0c8f8de15/Costoianii-obmena.jpg
+[2] https://pplx-res.cloudinary.com/image/private/user_uploads/73552077/315891f0-9053-403e-8c50-6c6153e27ba2/Obmena-soobshcheniiami-klient-server.jpg
+[3] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/e44cf27d-9535-4717-9207-50f932d9d405/Opisanie-protokola-01.txt
+[4] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/26c8d8bb-d372-46e5-884c-c485072a83a2/Protocol.h
+[5] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/f677a794-f2f4-4bc8-8a2a-1b6da605341e/DataContext.h
+[6] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/45d4849d-f8f1-4688-80c8-fb1be7014c21/IDataContext.h
+[7] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/fcfed0c9-cb02-4ffc-a0d8-5ce2a24e57cc/IProtocol.h
+[8] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/718fcce3-1e05-4a14-8798-e7a5f3dca437/kit_enums.h
+[9] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/e04294e6-1503-446a-b2dd-ddae8b97ea43/DataContext.cpp
+[10] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/6fbc5171-d17d-4c48-810e-20793ef1a133/Protocol.cpp
+[11] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/180958a1-30c2-4739-bddd-ab078258e884/i_memory_data_handler.h
+[12] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/bfc9feb9-b55a-4766-85dc-c95a381719e5/memory_base.h
+[13] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/10d9e6d5-f9eb-410b-96ae-b7bc99be3c07/memory_nome.h
+[14] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/b1555287-8161-4d44-b6fe-d88c9b094ac1/memory_processor.h
+[15] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/ce2d1963-b597-409b-8db7-9c489b1fc627/my_msgpack_adapters.h
+[16] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/d21af581-06a5-4a67-b7c3-736ff11f9142/shared_data_types.h
+[17] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/913d27c9-a2c8-45e9-8127-f24197475218/memory_base.cpp
+[18] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/4ecee3c6-7f68-4e24-89aa-116118df1bd6/memory_nome.cpp
+[19] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/a7cb0425-99f4-496e-a059-0bceac3348a9/memory_processor.cpp
+[20] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/ce7c5716-7bc4-4596-a7f5-b52ceb173e60/RecDataMetaData.cs
+[21] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/cf13874c-74e4-45f1-95e7-cdd987d85e81/MemoryBase.cs
+[22] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/dbdfe94c-c21c-475c-9158-5e14fbd08ebe/MemoryNome.cs
+[23] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/83eeed7b-21ae-4964-bb3d-e5abc69e47a3/ModuleCore.cs
+[24] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/73552077/0daf6087-9c95-4fce-8ae6-3a241c637b85/ServerHandshake.cs
+ 
+ */
