@@ -33,6 +33,7 @@ private:
   metadata_map parse_control_string(const char* str);
   std::string format_control_string(const metadata_map& metadata);
 
+  std::string name_module_;
   HANDLE h_control_map_file_ = nullptr;
   HANDLE h_data_map_file_ = nullptr;
   HANDLE h_event_ = nullptr;

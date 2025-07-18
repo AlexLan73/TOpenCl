@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+#include "interfaces/ModuleNameProvider.h"
+
 
 // Вспомогательная функция для конвертации std::string (UTF-8) в std::wstring (UTF-16) для WinAPI
 // Теперь это метод класса
@@ -20,6 +22,8 @@ std::wstring MemoryBase::to_wstring(const std::string& str) {
 MemoryBase::MemoryBase(const std::string& name_memory, const type_block_memory  type_block_memory_, const size_t data_segment_size,
                        const callback_data_meta_data& callBack)
 		: data_segment_size_(data_segment_size),  call_back_(callBack) {
+  name_module_ = ModuleNameProvider::instance().get_name();
+
 	const std::string name_memory_control = name_memory + "Control";
 	const std::wstring w_name_control = to_wstring(name_memory_control);
 	const std::wstring w_name_data = to_wstring(name_memory);
@@ -61,7 +65,6 @@ MemoryBase::~MemoryBase() {
   if (h_data_map_file_) CloseHandle(h_data_map_file_);
 }
 
-// --- ПУБЛИЧНЫЕ МЕТОДЫ ---
 void MemoryBase::write_data(const std::vector<uint8_t>& data, const metadata_map& metadata) {
   if (data.size() > data_segment_size_) {
     throw std::runtime_error("Размер данных превышает размер выделенного сегмента памяти.");
@@ -119,7 +122,156 @@ void MemoryBase::clear_command_control() {
   ::SetEvent(h_event_);
 }
 
-// --- ПРИВАТНЫЕ МЕТОДЫ ---
+void MemoryBase::event_loop() {
+  constexpr char handshake_prefix[] = "server";
+ // const std::string myModule = name_module_; // ModuleNameProvider::instance().get_name();
+  const std::string myHandshakeKey = std::string(handshake_prefix) + name_module_; // "serverCUDA" и др.
+
+  // При необходимости вынесите commands в отдельный enum/таблицу.
+  enum class MetaCommand { HandshakeOk, WorkOk, NotHandled };
+
+  auto analyze_and_respond = [&](metadata_map& metadata) -> MetaCommand {
+    // 1. Handshake: "state" == "serverCUDA"
+    auto itState = metadata.find("state");
+    if (itState != metadata.end() && itState->second == myHandshakeKey) {
+      // Ответить "ok" в MD
+      metadata["command"] = "ok";
+      set_command_control(metadata);
+      return MetaCommand::HandshakeOk;
+    }
+
+    // 2. Work command: "work" == ""
+    const auto it_work = metadata.find("work");
+    if (it_work != metadata.end() && it_work->second.empty()) {
+      metadata["work"] = "ok";
+      set_command_control(metadata);
+      return MetaCommand::WorkOk;
+    }
+
+    // 3. Любая другая команда
+    return MetaCommand::NotHandled;
+    };
+
+  while (running_.load()) {
+    if (WaitForSingleObject(h_event_, 1000) == WAIT_OBJECT_0) {
+      if (!running_.load()) break;
+
+      metadata_map metadata = get_command_control();
+
+      if (metadata.empty()) {
+        if (call_back_) call_back_({ {}, metadata });
+        continue;
+      }
+
+      // Автоматический анализ и ответ на handshake/workd
+      if (analyze_and_respond(metadata) != MetaCommand::NotHandled) {
+        // Перехватили и отработали — не передаём наверх
+        continue;
+      }
+
+      // Стандартное чтение данных, если есть
+      size_t dataSize = 0;
+      auto it = metadata.find("size");
+      if (it != metadata.end()) dataSize = std::stoul(it->second);
+
+      std::vector<uint8_t> data;
+      if (dataSize > 0) {
+        data.resize(dataSize);
+        LPVOID pDataBuf = MapViewOfFile(h_data_map_file_, FILE_MAP_READ, 0, 0, dataSize);
+        if (pDataBuf != nullptr) {
+          memcpy(data.data(), pDataBuf, dataSize);
+          UnmapViewOfFile(pDataBuf);
+        }
+        else {
+          data.clear();
+          std::cerr << "Ошибка: не удалось получить MapViewOfFile для данных размером " << dataSize << std::endl;
+        }
+      }
+
+      // Любая другая ситуация — колбэк в приложение
+      if (call_back_) call_back_({ data, metadata });
+    }
+  }
+}
+
+/*
+void MemoryBase::event_loop() {
+  while (running_.load()) {
+    // Ожидаем событие с таймаутом в 1 секунду
+    if (WaitForSingleObject(h_event_, 1000) == WAIT_OBJECT_0) {
+      // Двойная проверка, если был получен сигнал о завершении работы
+      if (!running_.load()) break;
+
+      metadata_map metadata = get_command_control();
+
+      // Ситуация 1: Событие пришло, но метаданных нет (или они пустые).
+      // Это может быть просто сигнал пробуждения или очистки.
+      // Мы все равно должны уведомить подписчика, передав пустые данные.
+      if (metadata.empty()) {
+        if (call_back_) {
+          call_back_({ {}, metadata });
+        }
+        continue; // Переходим к следующей итерации цикла
+      }
+
+      // Ситуация 2: Метаданные есть, нужно прочитать основной блок данных.
+      auto it = metadata.find("size");
+      size_t dataSize = (it != metadata.end()) ? std::stoul(it->second) : 0;
+
+      std::vector<uint8_t> data;
+      if (dataSize > 0) {
+        // Выделяем память в векторе ПЕРЕД чтением для эффективности
+        data.resize(dataSize);
+
+        LPVOID pDataBuf = MapViewOfFile(h_data_map_file_, FILE_MAP_READ, 0, 0, dataSize);
+        if (pDataBuf != nullptr) {
+          // Копируем данные напрямую в память вектора
+          memcpy(data.data(), pDataBuf, dataSize);
+          UnmapViewOfFile(pDataBuf);
+        }
+        else {
+          // Если не удалось прочитать, очищаем вектор на всякий случай
+          data.clear();
+          std::cerr << "Ошибка: не удалось получить MapViewOfFile для данных размером " << dataSize << std::endl;
+        }
+      }
+
+      // Вызываем колбэк с полученными данными (даже если они пустые из-за ошибки)
+      if (call_back_) {
+        call_back_({ data, metadata });
+      }
+    }
+  }
+}
+*/
+
+metadata_map MemoryBase::parse_control_string(const char* control_str) {
+  metadata_map metadata;
+  if (control_str == nullptr) return metadata;
+  const std::string str(control_str);
+  std::stringstream ss(str);
+  std::string segment;
+  while (std::getline(ss, segment, ';')) {
+    if (segment.empty()) continue;
+    const std::string::size_type pos = segment.find('=');
+    if (pos != std::string::npos) {
+      metadata[segment.substr(0, pos)] = segment.substr(pos + 1);
+    }
+  }
+  return metadata;
+}
+
+std::string MemoryBase::format_control_string(const metadata_map& metadata) {
+  std::stringstream ss;
+  for (const auto& pair : metadata) { // Исправлено: использован ranged-based for loop
+    ss << pair.first << "=" << pair.second << ";";
+  }
+  return ss.str();
+}
+
+/*
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void MemoryBase::event_loop() {
   while (running_.load()) {
     // Ожидаем событие с таймаутом в 1 секунду
@@ -169,32 +321,9 @@ void MemoryBase::event_loop() {
   }
 }
 
-metadata_map MemoryBase::parse_control_string(const char* control_str) {
-  metadata_map metadata;
-  if (control_str == nullptr) return metadata;
-  const std::string str(control_str);
-  std::stringstream ss(str);
-  std::string segment;
-  while (std::getline(ss, segment, ';')) {
-    if (segment.empty()) continue;
-    const std::string::size_type pos = segment.find('=');
-    if (pos != std::string::npos) {
-      metadata[segment.substr(0, pos)] = segment.substr(pos + 1);
-    }
-  }
-  return metadata;
-}
 
-std::string MemoryBase::format_control_string(const metadata_map& metadata) {
-  std::stringstream ss;
-  for (const auto& pair : metadata) { // Исправлено: использован ranged-based for loop
-    ss << pair.first << "=" << pair.second << ";";
-  }
-  return ss.str();
-}
 
-/*
- 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  Вот как можно переписать метод event_loop для MemoryBase с обработкой команд и автоматическим ответом, согласно вашему сценарию обмена и handshake-протоколу.
 
 ### Переписанный event_loop с автоматической обработкой handshake-команд
