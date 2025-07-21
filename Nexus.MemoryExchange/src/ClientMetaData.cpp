@@ -1,15 +1,133 @@
 ﻿// ReSharper disable CppClangTidyClangDiagnosticInvalidUtf8
 #include "pch.h"
 #include "MemoryExchange/ClientMetaData.h"
-
 #include "interfaces/MdCommand.h"
 
+
+ClientMetaData::ClientMetaData(const MetaSettings& meta_settings)
+  : meta_settings(meta_settings),
+  md(nullptr),
+  send_to_server(nullptr),
+  stop_requested(false),
+  call_back(nullptr),
+  _mode(SateMode::Initialization)
+{
+  name_module = "client" + meta_settings.GetMemoryName();
+
+  // Создаем/открываем событие для отправки серверу
+  send_to_server = CreateEventA(nullptr, FALSE, FALSE, meta_settings.GetMetaEventServer().c_str());
+  if (!send_to_server) throw std::runtime_error("Failed to create sendToServer event");
+
+  // Создаем вспомогательный объект для работы с памятью
+  md = new BasicMemoryMd(
+    meta_settings.GetMetaEventClient(),
+    meta_settings.GetMetaSize(),
+    meta_settings.GetControlName(),
+    [this](const metadata_map& map) { this->OnMetaData(map); },
+    send_to_server
+  );
+  // Запускаем поток
+  wait_thread = std::thread(&ClientMetaData::ReadDataCallBack, this);
+}
+
+ClientMetaData::~ClientMetaData() {
+  dispose();
+}
+
+void ClientMetaData::dispose() {
+  stop_requested = true;
+  if (wait_thread.joinable()) {
+    SetEvent(send_to_server);
+    wait_thread.join();
+  }
+  if (md) { md->Dispose(); delete md; md = nullptr; }
+  if (send_to_server) { CloseHandle(send_to_server); send_to_server = nullptr; }
+}
+
+void ClientMetaData::ReadDataCallBack() {
+  try {
+    while (!stop_requested) {
+      if (_mode == SateMode::Initialization) {
+        metadata_map init = {
+            { AsKey(MdCommand::State), name_module },
+            { AsKey(MdCommand::Command), "_" }
+        };
+        md->WriteMetaMap(init);
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));
+      }
+      else if (_mode == SateMode::Work) {
+        // Просто ждем — реакции только через OnMetaData
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      }
+      else if (_mode == SateMode::Dispose) {
+        metadata_map fin = {
+            { AsKey(MdCommand::State), name_module },
+            { AsKey(MdCommand::Command), AsKey(MdCommand::Ok) }
+        };
+        md->WriteMetaMap(fin);
+        break;
+      }
+    }
+  }
+  catch (const std::exception& ex) {
+    std::cerr << "Error in ReadDataCallBack: " << ex.what() << "\n";
+    if (call_back) call_back(metadata_map{});
+  }
+}
+
+void ClientMetaData::OnMetaData(const metadata_map& map) {
+  if (map.empty()) return;
+  const auto state_it = map.find(AsKey(MdCommand::State));
+  if (state_it == map.end() || state_it->second == name_module) return;
+  const auto cmd_it = map.find(AsKey(MdCommand::Command));
+
+  if (_mode == SateMode::Initialization &&
+    state_it->second.find("server") != std::string::npos &&
+    cmd_it != map.end() &&
+    cmd_it->second == AsKey(MdCommand::Ok))
+  {
+    _mode = SateMode::Work;
+    std::cout << "Handshake завершён, переходим в режим Work" << '\n';
+    return;
+  }
+
+  if (_mode == SateMode::Work &&
+    state_it->second.find("server") != std::string::npos)
+  {
+    // Здесь обработка данных:
+    PrintMapClient(map);
+    // Подтверждаем серверу -> "ок" всегда только после анализа!
+    metadata_map ack = {
+        { AsKey(MdCommand::State), name_module },
+        { AsKey(MdCommand::Command), AsKey(MdCommand::Ok) }
+    };
+    md->WriteMetaMap(ack);
+    std::cout << "[client] Ответил serverCUDA: ok\n";
+  }
+}
+
+
+void ClientMetaData::PrintMapClient(const metadata_map& map) {
+  for (const auto& [fst, snd] : map) {
+    std::cout << " - GLOBAL!!! client ==> " << fst << " = " << snd << "\n";
+  }
+}
+
+void ClientMetaData::work_dispose() {
+  _mode = SateMode::Dispose;
+  stop_requested = true;
+  if (wait_thread.joinable()) wait_thread.join();
+}
+
+
+/*
 ClientMetaData::ClientMetaData(const MetaSettings& metaSettings)
 			: _metaSettings(metaSettings),
 				md(nullptr),
 				sendToServer(nullptr),
 				_stopRequested(false),
-				_callBack(nullptr)
+				_callBack(nullptr),
+        _mode(SateMode::Initialization)
 {
   _nameModule = "client" + _metaSettings.GetMemoryName();
 
@@ -18,9 +136,7 @@ ClientMetaData::ClientMetaData(const MetaSettings& metaSettings)
     FALSE, 
     FALSE, 
     _metaSettings.GetMetaEventServer().c_str());
-  if (!sendToServer) {
-    throw std::runtime_error("Failed to create sendToServer event");
-  }
+  if (!sendToServer)  throw std::runtime_error("Failed to create sendToServer event");
 
   // Создаём экземпляр BasicMemoryMd
   md = new BasicMemoryMd(_metaSettings.GetMetaEventClient(), 
@@ -112,3 +228,4 @@ void ClientMetaData::work_dispose()
   }
 
 }
+*/

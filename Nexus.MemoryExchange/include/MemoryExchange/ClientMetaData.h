@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <windows.h>
 #include <string>
-#include <iostream>
 #include <thread>
 #include <atomic>
 #include <functional>
@@ -11,30 +10,32 @@
 #include "BasicMemoryMd.h"
 #include "interfaces/i_memory_config_channel.h"
 #include "MetaSettings.h"
+#include "interfaces/MdCommand.h"
 
 class ClientMetaData
 {
   // BasicMemoryMd(const std::string& eventName, int size, const std::string& controlName,
   //               std::function<void(const MapCommands&)> callBack, HANDLE sendTo);
 public:
-  MetaSettings _metaSettings;
+  MetaSettings meta_settings;
   BasicMemoryMd* md;
-  HANDLE sendToServer;
-  std::atomic<bool> _stopRequested;
-  std::thread _waitThread;
-  std::function<void(const metadata_map&)> _callBack;
-  std::string _nameModule;
+  HANDLE send_to_server;
+  std::atomic<bool> stop_requested;
+  std::thread wait_thread;
+  std::function<void(const metadata_map&)> call_back;
+  std::string name_module;
 
-  ClientMetaData(const MetaSettings& metaSettings);
+  ClientMetaData(const MetaSettings& meta_settings);
 
   ~ClientMetaData();
   void dispose();
-  void PrintMapClient(const metadata_map& map);
+  static void PrintMapClient(const metadata_map& map);
   void work_dispose();
 
 
 private:
   void ReadDataCallBack();
-
+  void OnMetaData(const metadata_map& map);
+  SateMode _mode;
 };
 
