@@ -2,6 +2,7 @@
 #pragma once
 #include <functional>
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -9,7 +10,8 @@
 enum class type_block_memory { read, write };
 enum class server_client { server, client };
 
-using metadata_map = std::map<std::string, std::string>;
+//using metadata_map = std::map<std::string, std::string>;
+using metadata_map = std::unordered_map<std::string, std::string>;
 
 struct rec_data_meta_data {
   std::vector<uint8_t> bytes;

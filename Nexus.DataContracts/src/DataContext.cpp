@@ -40,7 +40,7 @@ DataContext::DataContext(std::string name_module,
 
 
 
-void DataContext::on_memory_exchange_meta(const std::map<std::string, std::string>& meta_data) const
+void DataContext::on_memory_exchange_meta(const metadata_map& meta_data) const
 {
   protocol_new_->process_meta_data(meta_data);
 }

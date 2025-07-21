@@ -14,13 +14,13 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{a4aa1ae5-6d44-4bd1-b8be-15f87e304ffb}</UniqueIdentifier>
+      <UniqueIdentifier>{2ef16151-bc65-4d20-a6e5-d5750db7cbd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\LibTest">
+      <UniqueIdentifier>{2950cebc-1054-4442-9f39-bf77f98c14b3}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{45a345fe-0ba6-45d6-9145-8e039e17c1d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\Interfaces">
-      <UniqueIdentifier>{b36ed557-8f11-4b1f-b018-e367f6e7f8b5}</UniqueIdentifier>
+      <UniqueIdentifier>{7da266f1-00e2-4e24-9027-73150a0fb0e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,37 +30,19 @@
     <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="include\interfaces\i_memory_config_channel.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\ISend.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\ISendLogger.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\my_constant.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\TimeCounters.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\ok_no_error.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\ModuleNameProvider.h">
-      <Filter>include\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="include\interfaces\MdCommand.h">
-      <Filter>include\Interfaces</Filter>
+    <ClInclude Include="include\LibTest\TestClientPing.h">
+      <Filter>include\LibTest</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Nexus.Interfaces.cpp">
+    <ClCompile Include="LibTest.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LibTest.props" />
   </ItemGroup>
 </Project>

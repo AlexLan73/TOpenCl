@@ -4,11 +4,15 @@
 
 #include <iostream>
 #include <memory>
-
+#include "LibTest/TestClientPing.h"
 #include "CudaModule/MCuda.h"
 int main()
 {
-	auto cuda_modules_ = std::make_unique<cuda_module::CudaModule>();
+	auto _test_ping = std::make_shared<TestClientPing>("CUDA");
+	_test_ping->run();
+
+
+//	auto cuda_modules_ = std::make_unique<cuda_module::CudaModule>();
 
 }
 

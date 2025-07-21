@@ -2,51 +2,43 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemDefinitionGroup>
 		<ClCompile>
+			<!-- Общие настройки -->
 			<WarningLevel>Level3</WarningLevel>
 			<LanguageStandard>stdcpp20</LanguageStandard>
+
+			<!-- Пути к заголовочным файлам, которые нужны ядру Nexus -->
 			<AdditionalIncludeDirectories>
+				<!-- Используем переменные окружения -->
 				$(BOOST_ROOT)\;
 				$(VCPKG_ROOT)\installed\x64-windows\include\;
 
 				$(SolutionDir)..\Logger\include\;
-				$(SolutionDir)..\Nexus.Core\include\;
-				$(SolutionDir)..\Nexus.DataContracts\include\;
+
 				$(SolutionDir)..\Nexus.Interfaces\include\;
 				$(SolutionDir)..\Nexus.MemoryExchange\include\;
-				$(SolutionDir)..\CudaModule\include\;
-				$(SolutionDir)..\clFFTModule\include\;
-				$(SolutionDir)..\MinskModule\include\;
-				$(SolutionDir)..\LibTest\include\;
 
-				$(ProjectDir)include\;
-				$(ProjectDir);
+				<!-- Пути внутри проекта -->
+				$(ProjectDir)include\; <!-- Для своих .h в  -->
+				$(ProjectDir); <!-- Для своих .h в Nexus -->
 				%(AdditionalIncludeDirectories)
 			</AdditionalIncludeDirectories>
 		</ClCompile>
 		<Link>
+			<!-- Пути к каталогам библиотек -->
 			<AdditionalLibraryDirectories>
 				$(BOOST_ROOT)\stage\lib\;
 				$([System.String]::Copy('%(AdditionalLibraryDirectories)').Contains('debug')) ? '$(VCPKG_ROOT)\installed\x64-windows\debug\lib' : '$(VCPKG_ROOT)\installed\x64-windows\lib';
-				$(CUDA_PATH)\lib\x64\;
-				$(SolutionDir)$(Platform)\$(Configuration)\;
+				$(SolutionDir)$(Platform)\$(Configuration)\; <!-- Где лежит MemoryData.lib -->
 				%(AdditionalLibraryDirectories)
 			</AdditionalLibraryDirectories>
+
+			<!-- Конкретные библиотеки, от которых зависит ядро -->
 			<AdditionalDependencies>
 				Logger.lib;
-				Nexus.MemoryExchange.lib;
-				Nexus.DataContracts.lib;
-				Nexus.Core.lib;
 				Nexus.Interfaces.lib;
-				CudaModule.lib;
-				clFFTModule.lib;
-				MinskModule.lib;
-				LibTest.Lib;
-				<!--				nvml.lib;  -->
+				Nexus.MemoryExchange.lib;
 				%(AdditionalDependencies)
 			</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 </Project>
-
-
-
