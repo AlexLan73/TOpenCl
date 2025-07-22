@@ -29,13 +29,15 @@ public:
 
   ~ClientMetaData();
   void dispose();
+  void WriteMetaMap(const metadata_map& ack) const;
   static void PrintMapClient(const metadata_map& map);
   void work_dispose();
 
-
+  SateMode _mode;
+  TransferWaiting _transferWaiting;// Используется только для подтверждения ответа в режиме Work
 private:
   void ReadDataCallBack();
   void OnMetaData(const metadata_map& map);
-  SateMode _mode;
+  static bool contains_ignore_case(const std::string& text, const std::string& pattern);
 };
 

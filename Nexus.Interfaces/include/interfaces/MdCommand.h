@@ -36,6 +36,16 @@ enum class SateMode {
   Dispose
 };
 
+inline std::string AsKey(SateMode cmd) {
+  switch (cmd) {
+  case SateMode::None: return "None";
+  case SateMode::Initialization: return "Initialization";
+  case SateMode::Work: return "Work";
+  case SateMode::Dispose: return "Dispose";
+  default:                   return "";
+  }
+}
+
 // 3. Перечисление ClientServer
 enum class ClientServer {
   Client,
@@ -50,3 +60,10 @@ inline std::string AsKey(ClientServer cmd) {
   default:                   return "";
   }
 }
+
+enum  TransferWaiting
+{
+  None,
+  Transfer,
+  Waiting
+};
