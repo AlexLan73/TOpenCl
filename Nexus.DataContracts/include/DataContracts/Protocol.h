@@ -24,8 +24,8 @@ class IDataContext;
 
 class Protocol : public IProtocol {
 public:
-//  Protocol(std::shared_ptr<TimeCounters> counters);
-  Protocol(std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> log);
+//  Protocol(std::shared_ptr<TimeCounters> md_time);
+  Protocol(std::shared_ptr<ServerMetaDataTimer> md_time, std::shared_ptr<ILogger> log);
 
   void process_meta_data(const metadata_map& meta_data) override;
   void reset_counters() override;
@@ -34,7 +34,7 @@ public:
   void init_handshake();
 
 private:
-  std::shared_ptr<TimeCounters> counters_;
+//  std::shared_ptr<TimeCounters> md_time_;
   std::map<protocol_command, std::function<void()>> command_map_;
   std::map<event_command, std::function<void()>> event_map_;
   std::map<mode_command, std::function<void()>> mode_map_;
@@ -45,6 +45,7 @@ private:
   mode_command mode_current_ = mode_command::not_mode;
   std::shared_ptr<IDataContext> data_context_;
   std::shared_ptr<ILogger> i_logger_;
+  std::shared_ptr<ServerMetaDataTimer> md_time_;
 };
 
 /*

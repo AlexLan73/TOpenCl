@@ -19,7 +19,7 @@ DataContext::DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& pr
 }
 */
 DataContext::DataContext(std::string name_module, 
-							std::shared_ptr<TimeCounters> counters, 
+							std::shared_ptr<ServerMetaDataTimer> md_time,
 							std::shared_ptr<ILogger> i_logger) : name_module_(name_module),
 						i_logger_(i_logger)
 {

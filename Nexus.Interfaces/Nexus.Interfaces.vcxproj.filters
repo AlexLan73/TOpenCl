@@ -54,6 +54,9 @@
     <ClInclude Include="include\interfaces\MdCommand.h">
       <Filter>include\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="include\interfaces\PulsedTimer.h">
+      <Filter>include\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Nexus.Interfaces.cpp">

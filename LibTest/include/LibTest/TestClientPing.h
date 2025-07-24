@@ -18,11 +18,19 @@ public:
 	TestClientPing(std::string name_memory): meta_setting_(name_memory), namenemory_(std::move(name_memory))
 	{
 //		meta_setting_ = MetaSettings(name_memory);
-		client_meta_data_ = std::make_shared<ClientMetaData>(meta_setting_);
+    md_time_ = std::make_shared<ServerMetaDataTimer>();
+		client_meta_data_ = std::make_shared<ClientMetaData>(meta_setting_, md_time_);
 	}
+
 
 	void run()
 	{
+
+    //PulseTimer::Instance().Subscribe(&mod);
+    //PulseTimer::Instance().Start();
+    //// ...
+    //PulseTimer::Instance().Unsubscribe(&mod);
+    PulseTimer::Instance().Subscribe(client_meta_data_.get());
     std::cout << "Enter ESC \n";
     int i = 0;
     while (true) {
@@ -54,6 +62,9 @@ public:
       // Можно добавить действия цикла здесь
 //      std::cout << " client i = "<< i <<"\n";
 
+      SateMode _mode;
+      std::cout << "[CLIENT TOP] mode " << AsKey(client_meta_data_->_mode) << '\n';
+
       auto now = std::chrono::system_clock::now();
       std::time_t current_time_t = std::chrono::system_clock::to_time_t(now);
 
@@ -68,6 +79,7 @@ public:
       std::cout << ss.str() << '\n';
       i++;
     }
+    PulseTimer::Instance().Unsubscribe(client_meta_data_.get());
     client_meta_data_->work_dispose();
 
 	}
@@ -75,6 +87,7 @@ private:
 	MetaSettings meta_setting_;
 	std::string namenemory_;
 	std::shared_ptr<ClientMetaData> client_meta_data_;
+  std::shared_ptr<ServerMetaDataTimer> md_time_;
 };
 
 //SateMode _mode;

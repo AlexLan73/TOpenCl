@@ -18,7 +18,7 @@
 class DataContext : public IDataContext {
 public:
 //  DataContext(const std::shared_ptr<ILogger>& i_logger, IProtocol& protocol);
-  DataContext(std::string name_module, std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> i_logger);
+  DataContext(std::string name_module, std::shared_ptr<ServerMetaDataTimer> md_time, std::shared_ptr<ILogger> i_logger);
 
   void send(int channel_type, const ILoggerChannel& data, const metadata_map& meta = {}) override;
   void send(int channel_type, const IIdValueDtChannel& data, const metadata_map& meta = {}) override;
@@ -63,7 +63,7 @@ private:
 
   std::shared_ptr<MemoryProcessor> memory_processor_;
   std::string name_module_;
-  std::shared_ptr<TimeCounters> counters_;
+  std::shared_ptr<ServerMetaDataTimer> md_time_;
 
 };
 

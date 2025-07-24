@@ -26,7 +26,7 @@ private:
 	std::string name_module_ = "";
 	std::shared_ptr<EventGenerator> generator_;
 	std::shared_ptr<EventGenerator> generator_0_5sec_;
-	std::shared_ptr<TimeCounters> time_counters_;
+	std::shared_ptr<ServerMetaDataTimer> md_time_;
 	std::shared_ptr<ILogger> i_logger_;
 	std::shared_ptr<IDataContext> i_data_context_;
 	std::shared_ptr<IProtocol> i_protocol_;

@@ -5,14 +5,16 @@
 #include "interfaces/MdCommand.h"
 
 
-ClientMetaData::ClientMetaData(const MetaSettings& meta_settings)
-  : meta_settings(meta_settings),
-  md(nullptr),
-  send_to_server(nullptr),
-  stop_requested(false),
-  call_back(nullptr),
-  _mode(SateMode::Initialization)
+ClientMetaData::ClientMetaData(MetaSettings& meta_settings, const std::shared_ptr<ServerMetaDataTimer> md_time)
+  : meta_settings(meta_settings), md(nullptr),
+    send_to_server(nullptr),
+    stop_requested(false),
+    call_back(nullptr),
+    _mode(SateMode::Initialization),
+    md_time_(md_time)
 {
+  md_time->reset();
+
   name_module = "client" + meta_settings.GetMemoryName();
 
   // Создаем/открываем событие для отправки серверу
@@ -63,6 +65,8 @@ void ClientMetaData::OnMetaData(const metadata_map& map) {
   // название такое же выходим
   if (state_it == map.end() || state_it->second == name_module) return;
 
+  reset_timeGeneralWorke();
+
   switch (_mode)
   {
   case SateMode::Initialization:
@@ -79,24 +83,15 @@ void ClientMetaData::OnMetaData(const metadata_map& map) {
       return;
     }
     
-    if(cmd_it->second == AsKey(MdCommand::Ok)){
-			_mode = SateMode::Work;
-      _transferWaiting = TransferWaiting::Transfer;
-      std::cout << "Handshake END, go to in mode Work" << '\n';
-      return;
-    }
-    else
-    {
+	// Если команд нет — шлём пустое подтверждение
       metadata_map ack = {
-        { AsKey(MdCommand::State), name_module },
-        { AsKey(MdCommand::Command), AsKey(MdCommand::Ok) }
+             { AsKey(MdCommand::State), name_module },
+             { AsKey(MdCommand::Command), AsKey(MdCommand::Ok) }
       };
-      _mode = SateMode::Work;
       _transferWaiting = TransferWaiting::Transfer;
+      _mode = SateMode::Work;
       md->WriteMetaMap(ack);
-
-      return;
-    }
+    break;
   }
   case SateMode::Work:
   {
@@ -107,13 +102,15 @@ void ClientMetaData::OnMetaData(const metadata_map& map) {
     std::cout <<  " READ DATA in CLIENT Work" << '\n';
     // 👇 Пока ничего не шлём, ждём команды подтверждения
     if(map.size()<2) return;
-
+    reset_timeWork();
+    reset_timeGeneralWorke();
     const auto cmd_it = map.find(AsKey(MdCommand::Command));
     if (cmd_it != map.end())
     {
       if (cmd_it->second == AsKey(MdCommand::Ok))
       {
         _transferWaiting = TransferWaiting::Transfer; // подтверждение, что данные были приняты
+        reset_timeInitialization();
         std::cout << ">>> [CLIENT]  Work data OK!!!  " << '\n';
         return;
       } else
@@ -220,6 +217,95 @@ bool ClientMetaData::contains_ignore_case(const std::string& text, const std::st
     [](char ch1, char ch2) { return std::tolower(ch1) == std::tolower(ch2); }
   );
   return (it != text.end());
+}
+
+void ClientMetaData::On250ms()
+{
+  // inc
+  if (_mode == SateMode::Work)
+    ++_timeWork;
+  else
+    reset_timeWork();
+
+  // блок Comparison
+  if (_mode == SateMode::Work && _timeWork > compare_work)
+  {
+    reset_timeWork();
+    metadata_map ack = {
+      { AsKey(MdCommand::State), name_module },
+      { AsKey(MdCommand::Command), "_" }
+    };
+    _transferWaiting = TransferWaiting::Transfer;
+    md->WriteMetaMap(ack);
+    ++_workSendCount;
+  }
+}
+
+void ClientMetaData::On1Sec()
+{
+	// inc
+  if (_mode == SateMode::Initialization)
+    ++_timeInitialization;
+  else
+    reset_timeInitialization();
+  // блок Comparison
+
+  if (_mode == SateMode::Work 
+    && _timeInitialization > compare_initialization_)
+  { // время вышло связи нет переходим на начальный уровень
+    _mode = SateMode::Initialization;
+    _transferWaiting = TransferWaiting::None;
+    reset_timeWork();
+  	reset_timeInitialization();
+    metadata_map ack = {
+      { AsKey(MdCommand::State), name_module },
+      { AsKey(MdCommand::Command), "_" }
+    };
+    md->WriteMetaMap(ack);
+    return;
+  }
+
+  if (_mode == SateMode::Initialization && (_timeInitialization % 5 == 1))
+  { // время вышло связи нет переходим на начальный уровень
+//    _mode = SateMode::Initialization;
+    _transferWaiting = TransferWaiting::None;
+    reset_timeWork();
+    //      ResetInitialization();
+    metadata_map ack = {
+      { AsKey(MdCommand::State), name_module },
+      { AsKey(MdCommand::Command), "_" }
+    };
+    md->WriteMetaMap(ack);
+    return;
+  }
+
+  if (_mode == SateMode::Work && _workSendCount > compare_work_send_count_)
+  {
+    _mode = SateMode::Initialization;
+    reset_timeInitialization();
+    reset_timeWork();
+    reset_workSendCount();
+
+  	metadata_map ack = {
+      { AsKey(MdCommand::State), name_module },
+      { AsKey(MdCommand::Command), "_" }
+    };
+    md->WriteMetaMap(ack);
+    ++_workSendCount;
+  }
+}
+
+
+void ClientMetaData::On5Sec()
+{
+	// inc
+  if (_mode == SateMode::Initialization)
+    ++_timeGeneralWork;
+  else
+    reset_timeGeneralWorke();
+  // блок Comparison
+
+
 }
 
 

@@ -11,8 +11,10 @@
 #include "interfaces/i_memory_config_channel.h"
 #include "MetaSettings.h"
 #include "interfaces/MdCommand.h"
+#include "interfaces/PulsedTimer.h"
+#include "interfaces/TimeCounters.h"
 
-class ClientMetaData
+class ClientMetaData : public ITimerEventListener, public ServerMetaDataTimer
 {
   // BasicMemoryMd(const std::string& eventName, int size, const std::string& controlName,
   //               std::function<void(const MapCommands&)> callBack, HANDLE sendTo);
@@ -25,7 +27,8 @@ public:
   std::function<void(const metadata_map&)> call_back;
   std::string name_module;
 
-  ClientMetaData(const MetaSettings& meta_settings);
+//  ClientMetaData(MetaSettings& meta_settings);
+  ClientMetaData(MetaSettings& meta_settings, const std::shared_ptr<ServerMetaDataTimer> md_time);
 
   ~ClientMetaData();
   void dispose();
@@ -35,9 +38,15 @@ public:
 
   SateMode _mode;
   TransferWaiting _transferWaiting;// Используется только для подтверждения ответа в режиме Work
+
+	void On250ms() override;
+  void On1Sec() override;
+  void On5Sec() override;
+
 private:
-  void ReadDataCallBack();
+//  void ReadDataCallBack();
   void OnMetaData(const metadata_map& map);
   static bool contains_ignore_case(const std::string& text, const std::string& pattern);
+  std::shared_ptr<ServerMetaDataTimer> md_time_;
 };
 

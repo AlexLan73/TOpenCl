@@ -145,6 +145,7 @@
     <ClInclude Include="include\interfaces\i_memory_config_channel.h" />
     <ClInclude Include="include\interfaces\my_constant.h" />
     <ClInclude Include="include\interfaces\ok_no_error.h" />
+    <ClInclude Include="include\interfaces\PulsedTimer.h" />
     <ClInclude Include="include\interfaces\TimeCounters.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

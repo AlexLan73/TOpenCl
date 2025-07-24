@@ -3,8 +3,8 @@
 
 #include "DataContracts/IDataContext.h"
 
-Protocol::Protocol(std::shared_ptr<TimeCounters> counters, std::shared_ptr<ILogger> log)
-	:counters_(std::move(counters)), i_logger_(std::move(log))
+Protocol::Protocol(std::shared_ptr<ServerMetaDataTimer> md_time, std::shared_ptr<ILogger> log)
+	:md_time_(std::move(md_time)), i_logger_(std::move(log))
 {
   command_map_ = {
       {protocol_command::not_command, [this]() { std::cout << " Not command  \n"; }},
@@ -49,7 +49,7 @@ void Protocol::process_meta_data(const metadata_map& meta_data) {
   }
 
   void Protocol::reset_counters(){
-    counters_->reset();
+    md_time_->reset();
     std::cout << "Counters reset\n";
   }
 
